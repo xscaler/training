@@ -98,21 +98,6 @@ const sidebars: SidebarsConfig = {
       ],
     },
 
-    // ── Architecture ──────────────────────────────────────────────────────────
-    {
-      type: 'category',
-      label: 'Architecture',
-      collapsed: true,
-      items: [
-        'architecture/platform-architecture',
-        'architecture/telemetry-flow',
-        'architecture/multi-tenant',
-        'architecture/configuration-management',
-        'architecture/agent-mode',
-        'architecture/gateway-mode',
-      ],
-    },
-
     // ── Labs ──────────────────────────────────────────────────────────────────
     {
       type: 'category',
