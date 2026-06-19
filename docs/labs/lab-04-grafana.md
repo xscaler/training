@@ -15,12 +15,12 @@ Configure and verify all three xScaler datasources in Grafana, including cross-s
 ```mermaid
 graph LR
     GR[Grafana :3001]
-    DS_M[Datasource:\nPrometheus / Mimir]
+    DS_M[Datasource:\nPrometheus / xMetrics]
     DS_L[Datasource:\nLoki]
     DS_T[Datasource:\nTempo]
-    MI[Mimir :9009]
-    LO[Loki :3100]
-    TE[Tempo :3200]
+    MI[xMetrics :9009]
+    LO[xLogs :3100]
+    TE[xTraces :3200]
 
     GR --> DS_M --> MI
     GR --> DS_L --> LO
@@ -61,12 +61,12 @@ Expected: Recent traces from loadgen.
 
 ### Step 5 — Test Cross-Signal Correlation
 
-1. In Tempo Explore, click any trace
+1. In xTraces Explore, click any trace
 2. Click **Logs for this span**
-3. Verify Loki log lines appear
+3. Verify xLogs log lines appear
 
 <div class="screenshot-placeholder">
-[Screenshot: Grafana Tempo trace detail with side panel showing correlated Loki log lines]
+[Screenshot: xTraces trace detail with side panel showing correlated xLogs log lines]
 </div>
 
 ## Validation
@@ -74,12 +74,12 @@ Expected: Recent traces from loadgen.
 - [ ] All four datasources show green status
 - [ ] PromQL `up` returns results
 - [ ] LogQL `{service=~".+"}` returns log streams
-- [ ] Tempo search returns traces
+- [ ] xTraces search returns traces
 - [ ] Trace-to-logs correlation works
 
 ## Troubleshooting
 
-??? failure "Tempo shows 'no traces'"
+??? failure "xTraces shows 'no traces'"
     ```bash
     docker compose logs loadgen --tail=20
     docker compose ps loadgen

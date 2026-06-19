@@ -34,9 +34,9 @@ graph TB
     end
 
     subgraph Backends
-        MI[Mimir :9009]
-        LO[Loki :3100]
-        TE[Tempo :3200]
+        MI[xMetrics :9009]
+        LO[xLogs :3100]
+        TE[xTraces :3200]
     end
 
     C1 -->|HTTP| L1 --> LUA --> EXT1 --> MI
@@ -56,7 +56,7 @@ sequenceDiagram
     participant C as Client (OTel Collector)
     participant E as Envoy
     participant PA as proxy-auth (ext_authz)
-    participant MI as Mimir
+    participant MI as xMetrics
 
     C->>E: POST /api/v1/push\nAuthorization: Bearer xag_abc123
 
@@ -178,34 +178,34 @@ These are scraped by the edge OTel Collector and sent to `system-mimir` for plat
 
 ## Signal-Specific Routing
 
-### Metrics (Listener :8080 → Mimir)
+### Metrics (Listener :8080 → xMetrics)
 
 Routes:
-- `POST /api/v1/push` → Mimir push (Prometheus remote_write)
-- `GET /api/v1/query` → Mimir query (PromQL instant)
-- `GET /api/v1/query_range` → Mimir range query
+- `POST /api/v1/push` → xMetrics push (Prometheus remote_write)
+- `GET /api/v1/query` → xMetrics query (PromQL instant)
+- `GET /api/v1/query_range` → xMetrics range query
 - `GET /api/v1/label` → Label names
 - `GET /api/v1/series` → Series metadata
 - `POST /alertmanager/*` → 503 (alertmanager routes not exposed in this version)
 
-### Logs (Listener :8181 → Loki)
+### Logs (Listener :8181 → xLogs)
 
 Routes:
-- `POST /loki/api/v1/push` → Loki push
-- `GET /loki/api/v1/query` → Loki instant query (LogQL)
-- `GET /loki/api/v1/query_range` → Loki range query
-- `GET /api/v1/*` → Loki API passthrough
+- `POST /loki/api/v1/push` → xLogs push
+- `GET /loki/api/v1/query` → xLogs instant query (LogQL)
+- `GET /loki/api/v1/query_range` → xLogs range query
+- `GET /api/v1/*` → xLogs API passthrough
 
-### Traces HTTP (Listener :8282 → Tempo)
-
-Routes:
-- `POST /otlp/v1/traces` → Tempo OTLP HTTP ingest
-- `GET /api/traces/{traceID}` → Tempo trace lookup
-
-### Traces gRPC (Listener :4317 → Tempo)
+### Traces HTTP (Listener :8282 → xTraces)
 
 Routes:
-- `opentelemetry.proto.collector.trace.v1.TraceService/Export` → Tempo OTLP gRPC ingest
+- `POST /otlp/v1/traces` → xTraces OTLP HTTP ingest
+- `GET /api/traces/{traceID}` → xTraces trace lookup
+
+### Traces gRPC (Listener :4317 → xTraces)
+
+Routes:
+- `opentelemetry.proto.collector.trace.v1.TraceService/Export` → xTraces OTLP gRPC ingest
 
 ---
 

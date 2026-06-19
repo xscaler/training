@@ -4,8 +4,8 @@
 
 - [ ] Explain the Prometheus pull model vs OTLP push model
 - [ ] Configure the OTel Collector Prometheus receiver for scraping
-- [ ] Configure the OTel Collector prometheusremotewrite exporter for pushing to Mimir
-- [ ] Understand Mimir's multi-tenant ingestion model
+- [ ] Configure the OTel Collector prometheusremotewrite exporter for pushing to xMetrics
+- [ ] Understand xMetrics's multi-tenant ingestion model
 
 ---
 
@@ -15,12 +15,12 @@
 graph LR
     subgraph "Pull Model (Prometheus Scrape)"
         COL_PULL[OTel Collector] -->|HTTP GET /metrics| APP_PULL[Application\n:8080/metrics]
-        COL_PULL -->|remote_write| MI_PULL[Mimir]
+        COL_PULL -->|remote_write| MI_PULL[xMetrics]
     end
 
     subgraph "Push Model (OTLP)"
         APP_PUSH[Application\n+ OTel SDK] -->|OTLP push| COL_PUSH[OTel Collector]
-        COL_PUSH -->|remote_write / OTLP| MI_PUSH[Mimir]
+        COL_PUSH -->|remote_write / OTLP| MI_PUSH[xMetrics]
     end
 ```
 
@@ -103,7 +103,7 @@ scrape_configs:
 
 ## Push Model — OTLP Metrics
 
-Applications using the OTel SDK push metrics via OTLP to a collector, which then remote-writes to Mimir:
+Applications using the OTel SDK push metrics via OTLP to a collector, which then remote-writes to xMetrics:
 
 ```yaml
 # Customer collector config
@@ -128,16 +128,16 @@ exporters:
 
 ---
 
-## Mimir Multi-Tenant Ingestion
+## xMetrics Multi-Tenant Ingestion
 
-Mimir receives metrics via the Prometheus remote_write protocol at `/api/v1/push`. Each request must include `X-Scope-OrgID` to route to the correct tenant:
+xMetrics receives metrics via the Prometheus remote_write protocol at `/api/v1/push`. Each request must include `X-Scope-OrgID` to route to the correct tenant:
 
 ```mermaid
 sequenceDiagram
     participant COL as OTel Collector
     participant EN as Envoy :8080
     participant PA as proxy-auth
-    participant MI as Mimir
+    participant MI as xMetrics
 
     COL->>EN: POST /api/v1/push\nAuthorization: Bearer xag_...\nContent-Type: application/x-protobuf
     EN->>PA: ext_authz CheckRequest
@@ -148,7 +148,7 @@ sequenceDiagram
     MI->>COL: 204 No Content
 ```
 
-**Mimir configuration** (`deploy/mimir/mimir.yaml`):
+**xMetrics configuration** (`deploy/mimir/mimir.yaml`):
 ```yaml
 multitenancy_enabled: true
 
@@ -166,7 +166,7 @@ limits:
 
 ## Cardinality — The Most Important Metric Concept
 
-**Active series** drive your Mimir storage and billing costs. A single high-cardinality label can turn 100 series into 1,000,000.
+**Active series** drive your xMetrics storage and billing costs. A single high-cardinality label can turn 100 series into 1,000,000.
 
 **High-cardinality labels to AVOID in metrics:**
 
@@ -209,7 +209,7 @@ http_status_code (200/400/500 = ~10 grouped values)
 ### Exercise 3.1 — Verify Metrics Are Flowing
 
 ```bash
-# 1. Check the Prometheus endpoint of Mimir
+# 1. Check the Prometheus endpoint of xMetrics
 curl -s http://localhost:9009/metrics | head -20
 
 # 2. Query active series count via PromQL
@@ -225,8 +225,8 @@ curl -s "http://localhost:9009/prometheus/api/v1/targets" \
 ### Exercise 3.2 — Push a Test Metric
 
 ```bash
-# Send a metric via Prometheus remote_write to the local Mimir
-# (requires snappy-encoded protobuf in production, but Mimir accepts JSON for dev)
+# Send a metric via Prometheus remote_write to the local xMetrics
+# (requires snappy-encoded protobuf in production, but xMetrics accepts JSON for dev)
 curl -s -X POST "http://localhost:8080/api/v1/push" \
   -H "Authorization: Bearer $API_KEY" \
   -H "Content-Type: application/x-protobuf" \
@@ -249,9 +249,9 @@ curl -s -X POST "http://localhost:8080/api/v1/push" \
 !!! success "Session 3.1 Summary"
     - **Pull model** (Prometheus scrape): Collector polls `/metrics` → good for infrastructure components
     - **Push model** (OTLP): Apps send to collector → good for application-level telemetry
-    - **Mimir** ingests via Prometheus remote_write; tenant isolation via `X-Scope-OrgID`
+    - **xMetrics** ingests via Prometheus remote_write; tenant isolation via `X-Scope-OrgID`
     - **Cardinality** is the primary cost driver — never add user_id, request_id, or trace_id to metrics
-    - `max_global_series_per_user: 10,000,000` is the Mimir limit per tenant (local dev config)
+    - `max_global_series_per_user: 10,000,000` is the xMetrics limit per tenant (local dev config)
 
 ---
 

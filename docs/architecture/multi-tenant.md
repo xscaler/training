@@ -9,9 +9,9 @@ graph TB
     subgraph "Single Shared Infrastructure"
         EN[Envoy Gateway\nShared]
         PA[proxy-auth\nShared]
-        MI[Mimir\nShared process]
-        LO[Loki\nShared process]
-        TE[Tempo\nShared process]
+        MI[xMetrics\nShared process]
+        LO[xLogs\nShared process]
+        TE[xTraces\nShared process]
         S3[S3 Buckets\nShared storage]
     end
 
@@ -43,9 +43,9 @@ graph TB
 |---|---|
 | **Envoy** | Lua filter rejects multi-tenant header injection |
 | **proxy-auth** | Overwrites any client-supplied `X-Scope-OrgID` |
-| **Mimir** | `multitenancy_enabled: true` — all queries scoped to org ID |
-| **Loki** | `auth_enabled: true` — rejects requests without org ID header |
-| **Tempo** | `multitenancy_enabled: true` — trace storage namespaced |
+| **xMetrics** | `multitenancy_enabled: true` — all queries scoped to org ID |
+| **xLogs** | `auth_enabled: true` — rejects requests without org ID header |
+| **xTraces** | `multitenancy_enabled: true` — trace storage namespaced |
 | **S3** | Data stored under `s3://bucket/tenant_id/` prefix paths |
 
 ---
@@ -72,7 +72,7 @@ xs_org_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6
 
 ## Multi-Tenant Storage Paths
 
-### Mimir (S3)
+### xMetrics (S3)
 
 ```
 s3://xscaler-mimir-euw1-01/
@@ -86,7 +86,7 @@ s3://xscaler-mimir-euw1-01/
     └── 01J3456789012/
 ```
 
-### Loki (S3)
+### xLogs (S3)
 
 ```
 s3://xscaler-loki-euw1-01/
@@ -98,7 +98,7 @@ s3://xscaler-loki-euw1-01/
 └── xs_acme_def67890/
 ```
 
-### Tempo (S3)
+### xTraces (S3)
 
 ```
 s3://xscaler-tempo-euw1-01/

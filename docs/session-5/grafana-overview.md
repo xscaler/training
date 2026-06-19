@@ -19,17 +19,17 @@ graph TB
         GR[Grafana\n:3001]
     end
     subgraph "xScaler Data Plane"
-        MI[Mimir\nMetrics]
-        LO[Loki\nLogs]
-        TE[Tempo\nTraces]
+        MI[xMetrics\nMetrics]
+        LO[xLogs\nLogs]
+        TE[xTraces\nTraces]
     end
     subgraph "Authentication"
         ENV[Envoy Gateway\next_authz]
     end
 
     GR -->|Prometheus API\nX-Scope-OrgID + API Key| ENV
-    GR -->|Loki API\nX-Scope-OrgID + API Key| ENV
-    GR -->|Tempo API\nX-Scope-OrgID + API Key| ENV
+    GR -->|xLogs API\nX-Scope-OrgID + API Key| ENV
+    GR -->|xTraces API\nX-Scope-OrgID + API Key| ENV
     ENV --> MI & LO & TE
 ```
 
@@ -53,8 +53,8 @@ Each xScaler signal requires its own Grafana datasource:
 | Signal | Datasource Type | URL | Auth Headers |
 |---|---|---|---|
 | Metrics | Prometheus | `https://euw1-01.m.xscalerlabs.com/prometheus` | `Authorization: Bearer xag_...` + `X-Scope-OrgID` |
-| Logs | Loki | `https://euw1-01.l.xscalerlabs.com` | `Authorization: Bearer xag_...` + `X-Scope-OrgID` |
-| Traces | Tempo | `https://euw1-01.t.xscalerlabs.com` | `Authorization: Bearer xag_...` + `X-Scope-OrgID` |
+| Logs | xLogs | `https://euw1-01.l.xscalerlabs.com` | `Authorization: Bearer xag_...` + `X-Scope-OrgID` |
+| Traces | xTraces | `https://euw1-01.t.xscalerlabs.com` | `Authorization: Bearer xag_...` + `X-Scope-OrgID` |
 
 ---
 
@@ -73,7 +73,7 @@ datasources:
     secureJsonData:
       httpHeaderValue1: system-monitoring
     # Used by: xScaler platform operators
-    # Shows: Mimir internals, Envoy stats, proxy-auth metrics
+    # Shows: xMetrics internals, Envoy stats, proxy-auth metrics
 
   - name: client-mimir
     type: prometheus
@@ -103,7 +103,7 @@ datasources:
 ```
 
 !!! info "No API Key in Local Dev"
-    In the local dev stack, Envoy is not in the path for Grafana queries — Grafana connects directly to Mimir/Loki/Tempo. In production, Grafana queries go through Envoy and require `Authorization: Bearer xag_...`.
+    In the local dev stack, Envoy is not in the path for Grafana queries — Grafana connects directly to xMetrics/xLogs/xTraces. In production, Grafana queries go through Envoy and require `Authorization: Bearer xag_...`.
 
 ---
 
@@ -126,7 +126,7 @@ graph LR
 ### Trace-to-Logs Configuration
 
 ```yaml
-# Tempo datasource
+# xTraces datasource
 jsonData:
   tracesToLogs:
     datasourceUid: xscaler-logs
@@ -138,7 +138,7 @@ jsonData:
 ### Trace-to-Metrics Configuration
 
 ```yaml
-# Tempo datasource
+# xTraces datasource
 jsonData:
   tracesToMetrics:
     datasourceUid: xscaler-metrics
@@ -178,7 +178,7 @@ Expected result: `"Data source successfully connected."`
 5. Click **Logs for this span** to see related logs
 
 <div class="screenshot-placeholder">
-[Screenshot: Grafana Tempo trace view with spans expanded, showing "Logs for this span" button]
+[Screenshot: xTraces trace view with spans expanded, showing "Logs for this span" button]
 </div>
 
 ---
@@ -188,7 +188,7 @@ Expected result: `"Data source successfully connected."`
 - [ ] All four datasources show green status
 - [ ] PromQL `up` returns results in `client-mimir`
 - [ ] LogQL `{service=~".+"}` returns log streams in `client-loki`
-- [ ] Tempo search returns at least one trace
+- [ ] xTraces search returns at least one trace
 - [ ] Clicking a trace span shows the "Logs" button
 
 ---

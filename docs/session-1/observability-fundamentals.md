@@ -21,9 +21,9 @@ graph LR
         T["🔍 Traces\nWhere is it happening?"]
     end
     subgraph Storage
-        MI[Grafana Mimir]
-        LO[Grafana Loki]
-        TE[Grafana Tempo]
+        MI[xMetrics]
+        LO[xLogs]
+        TE[xTraces]
     end
     subgraph Query
         PQL[PromQL]
@@ -56,7 +56,7 @@ node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes
 pg_stat_database_numbackends{datname="xscaler"}
 ```
 
-**xScaler metrics storage:** Grafana Mimir (`multitenancy_enabled: true`, port `:9009`)
+**xScaler metrics storage:** xMetrics (`multitenancy_enabled: true`, port `:9009`)
 
 **Key characteristics:**
 - Aggregatable — you can sum, average, and percentile across thousands of series
@@ -83,7 +83,7 @@ metric_name{label1="value1", label2="value2"} 42.5 1718800000
 2026-06-18T10:22:33.501Z [ERROR] payment-api: charge failed after 3 retries, giving up
 ```
 
-**xScaler logs storage:** Grafana Loki (`auth_enabled: true`, HTTP `:3100`, gRPC `:9095`)
+**xScaler logs storage:** xLogs (`auth_enabled: true`, HTTP `:3100`, gRPC `:9095`)
 
 **LogQL query examples:**
 ```logql
@@ -129,7 +129,7 @@ gantt
     AuthorizePayment       : 20, 140
 ```
 
-**xScaler traces storage:** Grafana Tempo (`multitenancy_enabled: true`, HTTP `:3200`, gRPC `:9095`)
+**xScaler traces storage:** xTraces (`multitenancy_enabled: true`, HTTP `:3200`, gRPC `:9095`)
 
 **TraceQL query examples:**
 ```traceql
@@ -156,17 +156,17 @@ LGTM is the acronym for the four open-source components that form the xScaler ob
 
 | Letter | Component | Signal | Port(s) |
 |---|---|---|---|
-| **L** | Grafana Loki | Logs | HTTP :3100, gRPC :9095 |
+| **L** | xLogs | Logs | HTTP :3100, gRPC :9095 |
 | **G** | Grafana | Visualisation | :3001 |
-| **T** | Grafana Tempo | Traces | HTTP :3200, gRPC :9095 |
-| **M** | Grafana Mimir | Metrics | :9009 |
+| **T** | xTraces | Traces | HTTP :3200, gRPC :9095 |
+| **M** | xMetrics | Metrics | :9009 |
 
 ```mermaid
 graph TB
     subgraph "xScaler Data Plane"
-        MI[Grafana Mimir\nMetrics Storage]
-        LO[Grafana Loki\nLog Storage]
-        TE[Grafana Tempo\nTrace Storage]
+        MI[xMetrics\nMetrics Storage]
+        LO[xLogs\nLog Storage]
+        TE[xTraces\nTrace Storage]
     end
 
     subgraph "Visualisation"
@@ -174,9 +174,9 @@ graph TB
     end
 
     subgraph "Data Sources in Grafana"
-        DS1[Prometheus datasource → Mimir]
-        DS2[Loki datasource → Loki]
-        DS3[Tempo datasource → Tempo]
+        DS1[Prometheus datasource → xMetrics]
+        DS2[xLogs datasource → xLogs]
+        DS3[xTraces datasource → xTraces]
     end
 
     MI & LO & TE --> GR
@@ -185,7 +185,7 @@ graph TB
 
 ### Why Three Separate Backends?
 
-| Concern | Mimir (Metrics) | Loki (Logs) | Tempo (Traces) |
+| Concern | xMetrics (Metrics) | xLogs (Logs) | xTraces (Traces) |
 |---|---|---|---|
 | Data model | Float64 time series | Compressed log streams | Span trees |
 | Cardinality | Limited (labels only) | Unlimited (full text) | Unlimited (per-request) |
@@ -262,7 +262,7 @@ This returns `1` for every scrape target that is reachable.
 - [ ] Grafana is accessible at `http://localhost:3001`
 - [ ] All four datasources show green status (✓) in Connections → Data Sources
 - [ ] `up` query in Explore returns results from `client-mimir`
-- [ ] A LogQL query returns log lines in the Loki Explore view
+- [ ] A LogQL query returns log lines in the xLogs Explore view
 
 ---
 
@@ -279,7 +279,7 @@ This returns `1` for every scrape target that is reachable.
     Wait 30 seconds — scrape interval is 15s and there may not be enough data points yet.
     Also verify the correct datasource is selected (`client-mimir` not `system-mimir`).
 
-??? failure "Loki datasource connection error"
+??? failure "xLogs datasource connection error"
     ```bash
     curl -s http://localhost:3100/ready
     docker compose logs client-loki --tail=20
@@ -291,7 +291,7 @@ This returns `1` for every scrape target that is reachable.
 
 !!! success "Session 1.3 Summary"
     - Three observability signals: **metrics** (what), **logs** (why), **traces** (where)
-    - xScaler uses three separate backends: **Mimir** (metrics), **Loki** (logs), **Tempo** (traces)
+    - xScaler uses three separate backends: **xMetrics** (metrics), **xLogs** (logs), **xTraces** (traces)
     - **Grafana** is the single visualisation layer connecting all three backends
     - The **four golden signals** — latency, traffic, errors, saturation — are the foundation of SRE alerting
     - Use **PromQL** for metrics, **LogQL** for logs, **TraceQL** for traces

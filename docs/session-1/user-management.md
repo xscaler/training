@@ -126,7 +126,7 @@ sequenceDiagram
     participant E as Envoy
     participant PA as proxy-auth
     participant PG as PostgreSQL
-    participant MI as Mimir/Loki/Tempo
+    participant MI as xMetrics/xLogs/xTraces
 
     C->>E: POST /api/v1/push\nAuthorization: Bearer xag_...\nX-Scope-OrgID: (any)
     E->>PA: ext_authz gRPC CheckRequest

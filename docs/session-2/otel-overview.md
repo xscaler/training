@@ -23,15 +23,15 @@ graph LR
         COL[OTel Collector]
     end
     subgraph "Backends"
-        MI[Mimir / Prometheus]
-        LO[Loki / Elasticsearch]
-        TE[Tempo / Jaeger / Zipkin]
+        MI[xMetrics / Prometheus]
+        LO[xLogs / Elasticsearch]
+        TE[xTraces / Jaeger / Zipkin]
     end
 
     APP -->|instrument| SDK
     SDK -->|OTLP gRPC/HTTP| COL
     COL -->|Prometheus remote_write| MI
-    COL -->|Loki push| LO
+    COL -->|xLogs push| LO
     COL -->|OTLP| TE
 ```
 
@@ -66,7 +66,7 @@ graph TB
     subgraph "Protocol"
         OTLP["OTLP\n(gRPC :4317 / HTTP :4318)"]
         PRW["Prometheus remote_write"]
-        LOKI["Loki HTTP push"]
+        LOKI["xLogs HTTP push"]
     end
 
     SDK --> OTLP

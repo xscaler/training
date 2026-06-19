@@ -41,9 +41,9 @@ graph TB
         PXM[proxy-auth / metrics]
         PXL[proxy-auth / logs]
         PXT[proxy-auth / traces]
-        MI[Grafana Mimir :9009]
-        LO[Grafana Loki :3100]
-        TE[Grafana Tempo :3200]
+        MI[xMetrics :9009]
+        LO[xLogs :3100]
+        TE[xTraces :3200]
         GR[Managed Grafana]
         OC[OTel Collector]
     end
@@ -57,7 +57,7 @@ graph TB
     Users -->|HTTPS| PW
     PW -->|REST| PA
     PA <-->|Read/Write| PG
-    MS -->|Poll Mimir| SM
+    MS -->|Poll xMetrics| SM
     MS -->|Write rollups| PG
     AC -->|GitOps sync| EDGE
 
@@ -137,10 +137,10 @@ The edge entry point for all telemetry data. Envoy runs **four listeners** — o
 
 | Listener Port | Signal | Protocol | Backend |
 |---|---|---|---|
-| `:8080` | Metrics | HTTP (Prometheus remote_write) | Mimir |
-| `:8181` | Logs | HTTP (Loki push) | Loki |
-| `:8282` | Traces | HTTP (OTLP/HTTP) | Tempo |
-| `:4317` | Traces | gRPC (OTLP/gRPC) | Tempo |
+| `:8080` | Metrics | HTTP (Prometheus remote_write) | xMetrics |
+| `:8181` | Logs | HTTP (xLogs push) | xLogs |
+| `:8282` | Traces | HTTP (OTLP/HTTP) | xTraces |
+| `:4317` | Traces | gRPC (OTLP/gRPC) | xTraces |
 
 Every listener applies the **ext_authz** filter — all requests are authenticated before reaching the backend.
 
@@ -157,7 +157,7 @@ A Go service that validates API keys for every inbound request. There are three 
 5. Injects the `X-Scope-OrgID` header with the tenant ID
 6. Returns `OK` (200) to Envoy — which then forwards the request to the backend
 
-### Grafana Mimir (Tenant Metrics)
+### xMetrics (Tenant Metrics)
 
 Multi-tenant long-term metrics storage. Receives Prometheus remote_write or OTLP metrics via Envoy.
 
@@ -165,16 +165,16 @@ Multi-tenant long-term metrics storage. Receives Prometheus remote_write or OTLP
 - Port: `:9009`
 - Object storage: S3 (`xscaler-mimir-{region}` bucket)
 
-### Grafana Loki (Tenant Logs)
+### xLogs (Tenant Logs)
 
-Multi-tenant log aggregation. Receives Loki push API requests via Envoy.
+Multi-tenant log aggregation. Receives xLogs push API requests via Envoy.
 
 - `auth_enabled: true`
 - HTTP: `:3100`, gRPC: `:9095`
 - Schema: TSDB v13
 - Object storage: S3 (`xscaler-loki-{region}` bucket)
 
-### Grafana Tempo (Tenant Traces)
+### xTraces (Tenant Traces)
 
 Multi-tenant distributed trace storage. Receives OTLP gRPC/HTTP via Envoy.
 
@@ -196,7 +196,7 @@ X-Scope-OrgID: xs_payment_abc12345
 This header is:
 1. **Set by `proxy-auth`** after validating the API key — not trusted from the client
 2. **Enforced by Envoy** — a Lua filter rejects any request with multiple org IDs or commas
-3. **Used by Mimir, Loki, and Tempo** as the tenant namespace for all storage operations
+3. **Used by xMetrics, xLogs, and xTraces** as the tenant namespace for all storage operations
 
 !!! warning "Security Model"
     Clients never set `X-Scope-OrgID` themselves. Even if a client sends this header, the Envoy Lua filter clears it and proxy-auth overwrites it with the correct tenant ID derived from the API key lookup.
@@ -256,7 +256,7 @@ docker compose images
     docker compose logs proxy-auth --tail=20
     ```
 
-??? failure "Tempo shows 'failed to create blocks'"
+??? failure "xTraces shows 'failed to create blocks'"
     Check block retention settings and disk space:
     ```bash
     docker compose exec tempo df -h /tmp/tempo

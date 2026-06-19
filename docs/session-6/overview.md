@@ -22,7 +22,7 @@
 
 - [ ] Build a service dashboard using the four golden signals
 - [ ] Use Grafana variables for dynamic tenant and service filtering
-- [ ] Interpret distributed traces in Grafana Tempo
+- [ ] Interpret distributed traces in xTraces
 - [ ] Create an alert rule with PromQL
 - [ ] Configure a notification channel
 - [ ] Test alert firing and resolution

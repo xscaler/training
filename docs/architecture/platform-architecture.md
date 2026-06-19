@@ -22,9 +22,9 @@ graph TB
         PXM["proxy-auth/metrics\ngRPC ext_authz"]
         PXL["proxy-auth/logs\ngRPC ext_authz"]
         PXT["proxy-auth/traces\ngRPC ext_authz"]
-        MI["Grafana Mimir :9009\nMetrics Storage"]
-        LO["Grafana Loki :3100\nLog Storage"]
-        TE["Grafana Tempo :3200\nTrace Storage"]
+        MI["xMetrics :9009\nMetrics Storage"]
+        LO["xLogs :3100\nLog Storage"]
+        TE["xTraces :3200\nTrace Storage"]
         GR["Managed Grafana\nPer-Tenant"]
         OC["OTel Collector\nEdge Monitoring"]
     end
@@ -65,8 +65,8 @@ graph TB
 | `portal-api` | Go | `:8081` | REST API: tenant CRUD, auth, billing, usage |
 | `portal-web` | Next.js/TypeScript | `:3000` | SPA web portal |
 | `agent-api` | Go | `:8082` | OpAMP server for OTel agent management |
-| `mimir-sync` | Go | — | Polls Mimir, writes PostgreSQL usage rollups |
-| `system-mimir` | Grafana Mimir | `:9010` | Platform self-monitoring metrics |
+| `mimir-sync` | Go | — | Polls xMetrics, writes PostgreSQL usage rollups |
+| `system-mimir` | xMetrics | `:9010` | Platform self-monitoring metrics |
 | `provisiond` | Go | — | Managed Grafana provisioner (Helm operator) |
 | `postgres` | PostgreSQL | `:5432` | Single source of truth for all control state |
 | `ArgoCD` | — | — | GitOps controller (syncs from `/gitops/`) |
@@ -77,9 +77,9 @@ graph TB
 |---|---|---|---|
 | `envoy` | C++/Envoy Proxy | `:8080/:8181/:8282/:4317` | Edge gateway + ext_authz |
 | `proxy-auth` | Go | `:9001` (gRPC), `:9002` (metrics) | API key validation, rate limiting |
-| `client-mimir` | Grafana Mimir | `:9009` | Tenant metrics storage |
-| `client-loki` | Grafana Loki | `:3100/:9095` | Tenant log storage |
-| `tempo` | Grafana Tempo | `:3200/:9095` | Tenant trace storage |
+| `client-mimir` | xMetrics | `:9009` | Tenant metrics storage |
+| `client-loki` | xLogs | `:3100/:9095` | Tenant log storage |
+| `tempo` | xTraces | `:3200/:9095` | Tenant trace storage |
 | `otel-collector` | OTel Contrib | `:4317/:4318` | Edge platform monitoring |
 
 ---

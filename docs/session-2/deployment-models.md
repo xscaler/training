@@ -269,7 +269,7 @@ Answer these questions:
     - **Agent Mode** — DaemonSet per node, local buffering, host metrics, suits Kubernetes
     - **Gateway Mode** — centralised Deployment, cross-service aggregation, centralised routing
     - **Combined** — agents collect locally, gateway aggregates before export — best for 20+ nodes
-    - xScaler's edge OTel collector is a **platform agent** (scrapes Mimir, Envoy, proxy-auth)
+    - xScaler's edge OTel collector is a **platform agent** (scrapes xMetrics, Envoy, proxy-auth)
 
 ---
 

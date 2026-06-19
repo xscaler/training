@@ -2,9 +2,9 @@
 
 ## Learning Objectives
 
-- [ ] Configure a Prometheus (Mimir) datasource with xScaler authentication
-- [ ] Configure a Loki datasource with xScaler authentication
-- [ ] Configure a Tempo datasource with xScaler authentication
+- [ ] Configure a Prometheus (xMetrics) datasource with xScaler authentication
+- [ ] Configure a xLogs datasource with xScaler authentication
+- [ ] Configure a xTraces datasource with xScaler authentication
 - [ ] Set up trace-to-logs and trace-to-metrics correlation
 - [ ] Use YAML provisioning for GitOps-managed datasource configuration
 
@@ -20,7 +20,7 @@ Before configuring datasources, you need:
 
 ---
 
-## Metrics Datasource (Prometheus → Mimir)
+## Metrics Datasource (Prometheus → xMetrics)
 
 === "Grafana UI"
 
@@ -71,11 +71,11 @@ Before configuring datasources, you need:
 
 ---
 
-## Logs Datasource (Loki)
+## Logs Datasource (xLogs)
 
 === "Grafana UI"
 
-    1. **Connections → Add data source → Loki**
+    1. **Connections → Add data source → xLogs**
 
     | Field | Value |
     |---|---|
@@ -87,14 +87,14 @@ Before configuring datasources, you need:
     2. Configure **Derived Fields** for trace correlation:
 
     <div class="screenshot-placeholder">
-    [Screenshot: Grafana Loki datasource with Derived Fields section showing TraceID regex pattern]
+    [Screenshot: xLogs datasource with Derived Fields section showing TraceID regex pattern]
     </div>
 
     | Field | Value |
     |---|---|
     | Name | `TraceID` |
     | Regex | `trace_id=(\w+)` |
-    | Query | (link to Tempo datasource) |
+    | Query | (link to xTraces datasource) |
     | Internal link | Select `xScaler Traces` datasource |
 
 === "YAML Provisioning"
@@ -120,11 +120,11 @@ Before configuring datasources, you need:
 
 ---
 
-## Traces Datasource (Tempo)
+## Traces Datasource (xTraces)
 
 === "Grafana UI"
 
-    1. **Connections → Add data source → Tempo**
+    1. **Connections → Add data source → xTraces**
 
     | Field | Value |
     |---|---|
@@ -224,7 +224,7 @@ curl -s "$GRAFANA_URL/api/datasources/$DS_ID/health" \
 4. Click the **Logs** button — you should see log lines from `client-loki` filtered by `trace_id`
 
 <div class="screenshot-placeholder">
-[Screenshot: Tempo trace view with a span expanded and "Logs for this span" panel showing log lines from Loki]
+[Screenshot: xTraces trace view with a span expanded and "Logs for this span" panel showing log lines from xLogs]
 </div>
 
 ---
@@ -234,8 +234,8 @@ curl -s "$GRAFANA_URL/api/datasources/$DS_ID/health" \
 - [ ] All three datasources show green status (✓) in Connections → Data Sources
 - [ ] PromQL `rate(http_requests_total[5m])` returns data in Metrics datasource
 - [ ] LogQL `{service=~".+"}` returns log streams in Logs datasource
-- [ ] Tempo search returns trace results
-- [ ] Clicking a trace span opens the related Loki logs panel
+- [ ] xTraces search returns trace results
+- [ ] Clicking a trace span opens the related xLogs logs panel
 
 ---
 
@@ -250,14 +250,14 @@ curl -s "$GRAFANA_URL/api/datasources/$DS_ID/health" \
       --data-urlencode 'query=up' | jq .status
     ```
 
-??? failure "Tempo datasource: 'No traces found'"
+??? failure "xTraces datasource: 'No traces found'"
     Check that traces are being ingested:
     ```bash
     curl -s "http://localhost:3200/api/v2/search" \
       -H "X-Scope-OrgID: $TENANT_ID" | jq .traces
     ```
 
-??? failure "Loki derived field TraceID not linking"
+??? failure "xLogs derived field TraceID not linking"
     Verify the regex matches the actual log format. Check a real log line:
     ```logql
     {service=~".+"} |= "trace_id"
@@ -268,11 +268,11 @@ curl -s "$GRAFANA_URL/api/datasources/$DS_ID/health" \
 ## Key Takeaways
 
 !!! success "Session 5.3 Summary"
-    - Three datasources required: **Prometheus** (Mimir), **Loki**, **Tempo**
+    - Three datasources required: **Prometheus** (xMetrics), **xLogs**, **xTraces**
     - All three require `Authorization: Bearer xag_...` and `X-Scope-OrgID: xs_...` headers
     - Use **secureJsonData** for header values — they are stored encrypted in Grafana
-    - **Derived fields** in Loki connect log entries to traces via `trace_id`
-    - **Trace to Logs** and **Trace to Metrics** enable cross-signal correlation in Tempo
+    - **Derived fields** in xLogs connect log entries to traces via `trace_id`
+    - **Trace to Logs** and **Trace to Metrics** enable cross-signal correlation in xTraces
     - Use YAML provisioning for GitOps-managed, reproducible datasource configuration
 
 ---

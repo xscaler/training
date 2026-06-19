@@ -29,9 +29,9 @@ graph TB
 
     subgraph "xScaler Data Plane"
         EN[Envoy Gateway]
-        MI[Mimir]
-        LO[Loki]
-        TE[Tempo]
+        MI[xMetrics]
+        LO[xLogs]
+        TE[xTraces]
     end
 
     SUP <-->|OpAMP WebSocket| AA

@@ -22,7 +22,7 @@
 ## Learning Objectives
 
 - [ ] Explain the difference between pull (Prometheus scrape) and push (OTLP) collection
-- [ ] Trace a metric from OTel Collector to Mimir through Envoy and proxy-auth
+- [ ] Trace a metric from OTel Collector to xMetrics through Envoy and proxy-auth
 - [ ] Describe how proxy-auth validates API keys and injects X-Scope-OrgID
 - [ ] Design a data collection architecture for a sample customer scenario
 

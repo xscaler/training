@@ -92,7 +92,7 @@ curl -s "$LOGS_BASE/loki/api/v1/query" \
   --data-urlencode 'query={service="my-service"}' \
   --data-urlencode 'limit=10' | jq '.data.result[0].values[:3]'
 
-# Push logs (Loki format)
+# Push logs (xLogs format)
 curl -s -X POST "$LOGS_BASE/loki/api/v1/push" \
   -H "Authorization: Bearer $API_KEY" \
   -H "X-Scope-OrgID: $TENANT_ID" \

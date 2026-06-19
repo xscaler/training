@@ -26,9 +26,9 @@ graph LR
         P4[attributes]
     end
     subgraph Exporters
-        E1[prometheusremotewrite\n→ Mimir]
-        E2[otlphttp\n→ Tempo]
-        E3[otlphttp\n→ Loki]
+        E1[prometheusremotewrite\n→ xMetrics]
+        E2[otlphttp\n→ xTraces]
+        E3[otlphttp\n→ xLogs]
         E4[debug\nconsole]
     end
 
@@ -204,7 +204,7 @@ processors:
 
 Exporters **send data** to backends.
 
-#### prometheusremotewrite (for Mimir)
+#### prometheusremotewrite (for xMetrics)
 
 ```yaml
 exporters:
@@ -224,7 +224,7 @@ exporters:
       queue_size: 5000
 ```
 
-#### otlphttp (for Tempo / Loki OTLP)
+#### otlphttp (for xTraces / xLogs OTLP)
 
 ```yaml
 exporters:
@@ -370,7 +370,7 @@ Create a collector config file that:
 1. Receives OTLP metrics via HTTP on port 4318
 2. Limits memory to 128 MiB
 3. Batches every 5 seconds
-4. Exports to your local Mimir instance
+4. Exports to your local xMetrics instance
 
 ```bash
 cat > /tmp/my-collector.yaml << 'EOF'

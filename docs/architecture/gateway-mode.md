@@ -22,9 +22,9 @@ graph TB
 
     subgraph "xScaler Edge"
         EN[Envoy Gateway]
-        MI[Mimir]
-        LO[Loki]
-        TE[Tempo]
+        MI[xMetrics]
+        LO[xLogs]
+        TE[xTraces]
     end
 
     A1 & A2 -->|gRPC| SVC

@@ -14,7 +14,7 @@
 |---|---|---|
 | 0:00 – 0:20 | Grafana overview: role in xScaler, datasource model | Presentation |
 | 0:20 – 0:50 | Deployment options: self-managed vs managed Grafana | Presentation |
-| 0:50 – 1:30 | Datasource configuration: Mimir, Loki, Tempo | Hands-On Lab |
+| 0:50 – 1:30 | Datasource configuration: xMetrics, xLogs, xTraces | Hands-On Lab |
 
 ---
 
@@ -22,7 +22,7 @@
 
 - [ ] Explain Grafana's role in the xScaler platform
 - [ ] Choose between self-managed and managed Grafana
-- [ ] Configure Prometheus, Loki, and Tempo datasources with API key auth
+- [ ] Configure Prometheus, xLogs, and xTraces datasources with API key auth
 - [ ] Set up trace-to-logs and trace-to-metrics correlation
 - [ ] Verify all datasources are healthy
 

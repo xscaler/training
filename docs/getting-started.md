@@ -131,15 +131,15 @@ curl -s http://localhost:8081/health | jq .
 curl -s http://localhost:8082/health | jq .
 # Expected: {"status":"ok"}
 
-# Mimir (tenant metrics)
+# xMetrics (tenant metrics)
 curl -s http://localhost:9009/ready
 # Expected: ready
 
-# Loki (logs)
+# xLogs (logs)
 curl -s http://localhost:3100/ready
 # Expected: ready
 
-# Tempo (traces)
+# xTraces (traces)
 curl -s http://localhost:3200/ready
 # Expected: ready
 ```
@@ -273,7 +273,7 @@ graph TB
     docker compose restart portal-api
     ```
 
-??? failure "Mimir returns 500"
+??? failure "xMetrics returns 500"
     Check the block retention config:
     ```bash
     docker compose logs client-mimir --tail=30

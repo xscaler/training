@@ -41,9 +41,9 @@ graph LR
         T[🔍 Traces]
     end
     subgraph LGTM Stack
-        MI[Mimir]
-        LO[Loki]
-        TE[Tempo]
+        MI[xMetrics]
+        LO[xLogs]
+        TE[xTraces]
         GR[Grafana]
     end
     M --> MI
@@ -54,9 +54,9 @@ graph LR
 
 | Component | Role |
 |---|---|
-| **Grafana Mimir** | Multi-tenant long-term metrics storage |
-| **Grafana Loki** | Multi-tenant log aggregation |
-| **Grafana Tempo** | Distributed trace storage |
+| **xMetrics** | Multi-tenant long-term metrics storage |
+| **xLogs** | Multi-tenant log aggregation |
+| **xTraces** | Distributed trace storage |
 | **Grafana** | Visualisation, dashboards, alerting |
 | **Envoy** | Edge gateway — authentication + routing |
 | **proxy-auth** | API key validation and rate limiting |
@@ -95,10 +95,10 @@ Your instructor will provide environment credentials. The local development stac
 | Portal UI | `http://localhost:3000` | Web portal |
 | Portal API | `http://localhost:8081` | Control plane API |
 | Agent API (OpAMP) | `ws://localhost:8082/v1/opamp` | Agent management |
-| Metrics ingestion | `http://localhost:8080` | Envoy → Mimir |
-| Logs ingestion | `http://localhost:8181` | Envoy → Loki |
-| Traces ingestion | `http://localhost:8282` | Envoy → Tempo |
-| Traces (gRPC) | `grpc://localhost:4317` | Envoy → Tempo |
+| Metrics ingestion | `http://localhost:8080` | Envoy → xMetrics |
+| Logs ingestion | `http://localhost:8181` | Envoy → xLogs |
+| Traces ingestion | `http://localhost:8282` | Envoy → xTraces |
+| Traces (gRPC) | `grpc://localhost:4317` | Envoy → xTraces |
 | Grafana | `http://localhost:3001` | Dashboards |
 
 ---

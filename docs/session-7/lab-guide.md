@@ -126,7 +126,7 @@ curl -s -X POST "http://localhost:8080/otlp/v1/metrics" \
 ### Step 2.2 — Push Test Logs
 
 ```bash
-# Send logs via Loki push API
+# Send logs via xLogs push API
 curl -s -X POST "http://localhost:8181/loki/api/v1/push" \
   -H "Authorization: Bearer $API_KEY" \
   -H "Content-Type: application/json" \
@@ -205,7 +205,7 @@ curl -s "http://localhost:3100/loki/api/v1/query" \
   --data-urlencode 'limit=5' | jq '.data.result | length'
 # Expected: 1 (stream found)
 
-# Verify traces (check Tempo)
+# Verify traces (check xTraces)
 echo "=== Traces ==="
 curl -s "http://localhost:3200/api/traces/$TRACE_ID" \
   -H "X-Scope-OrgID: $TENANT_ID" | jq '.batches | length'
@@ -264,7 +264,7 @@ curl -s -X POST "http://localhost:3001/api/dashboards/db" \
 [Screenshot: Lab7 Service Dashboard in Grafana showing the request counter time series panel and logs panel side by side]
 </div>
 
-### Step 3.3 — Find Your Trace in Tempo
+### Step 3.3 — Find Your Trace in xTraces
 
 1. Open Grafana → **Explore** → Select `tempo` datasource
 2. Enter your trace ID:
@@ -274,7 +274,7 @@ $TRACE_ID
 3. Verify the span appears with the correct attributes
 
 <div class="screenshot-placeholder">
-[Screenshot: Grafana Tempo showing the Lab7 Test Span with 150ms duration and POST /api/test attributes]
+[Screenshot: xTraces showing the Lab7 Test Span with 150ms duration and POST /api/test attributes]
 </div>
 
 ---
@@ -384,7 +384,7 @@ curl -s "http://localhost:3200/api/traces/$TRACE_ID" \
       --data-urlencode 'query=up' 2>&1 | grep "< HTTP"
     ```
 
-??? failure "Loki push returns 400"
+??? failure "xLogs push returns 400"
     The timestamp must be in nanoseconds. Check format:
     ```bash
     # Correct: 19-digit nanoseconds
@@ -392,7 +392,7 @@ curl -s "http://localhost:3200/api/traces/$TRACE_ID" \
     ```
     On macOS, install GNU date: `brew install coreutils` then use `gdate`.
 
-??? failure "Trace not found in Tempo"
+??? failure "Trace not found in xTraces"
     Trace ID must be exactly 32 hex characters (16 bytes). Verify:
     ```bash
     echo -n "$TRACE_ID" | wc -c  # Should output 32

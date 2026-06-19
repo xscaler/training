@@ -2,7 +2,7 @@
 
 ## Learning Objectives
 
-- [ ] Navigate and interpret distributed traces in Grafana Tempo
+- [ ] Navigate and interpret distributed traces in xTraces
 - [ ] Use the service map to understand inter-service dependencies
 - [ ] Identify slow spans and trace errors using TraceQL
 - [ ] Correlate a slow trace to related logs and metrics
@@ -52,7 +52,7 @@ gantt
 
 ## Finding Slow Requests with TraceQL
 
-TraceQL is Tempo's query language for searching traces:
+TraceQL is xTraces's query language for searching traces:
 
 ```traceql
 # All traces taking more than 500ms
@@ -73,16 +73,16 @@ TraceQL is Tempo's query language for searching traces:
 
 ---
 
-## Grafana Tempo Views
+## xTraces Views
 
 ### Trace Search
 
-1. Open **Explore → Tempo**
+1. Open **Explore → xTraces**
 2. Select **Search** tab
 3. Filter by service name, span name, duration
 
 <div class="screenshot-placeholder">
-[Screenshot: Grafana Tempo search view showing a list of traces with duration, service name, and timestamp columns]
+[Screenshot: xTraces search view showing a list of traces with duration, service name, and timestamp columns]
 </div>
 
 ### Trace Detail View
@@ -90,7 +90,7 @@ TraceQL is Tempo's query language for searching traces:
 Click any trace to see the full waterfall:
 
 <div class="screenshot-placeholder">
-[Screenshot: Grafana Tempo trace waterfall view showing nested spans with durations, service names highlighted in different colours]
+[Screenshot: xTraces trace waterfall view showing nested spans with durations, service names highlighted in different colours]
 </div>
 
 **Reading the waterfall:**
@@ -104,10 +104,10 @@ Click any trace to see the full waterfall:
 The service map visualises inter-service call relationships, built from trace data:
 
 <div class="screenshot-placeholder">
-[Screenshot: Grafana Tempo service map showing nodes for each service with edges representing call paths, request rates, and error rates labelled on edges]
+[Screenshot: xTraces service map showing nodes for each service with edges representing call paths, request rates, and error rates labelled on edges]
 </div>
 
-Enable via Tempo datasource configuration:
+Enable via xTraces datasource configuration:
 ```yaml
 jsonData:
   serviceMap:
@@ -148,7 +148,7 @@ These span metrics are available if you enable the **spanmetrics connector** in 
 2. Click **Search** tab → Run Query (no filters)
 
 <div class="screenshot-placeholder">
-[Screenshot: Tempo search results showing 10-20 recent traces from the loadgen service]
+[Screenshot: xTraces search results showing 10-20 recent traces from the loadgen service]
 </div>
 
 3. Sort by **Duration** (descending) — find the slowest trace
@@ -161,12 +161,12 @@ These span metrics are available if you enable the **spanmetrics connector** in 
 6. Click the span → click **Logs for this span**
 
 <div class="screenshot-placeholder">
-[Screenshot: Trace detail with a selected span showing the "Logs" side panel with Loki log lines filtered by trace_id]
+[Screenshot: Trace detail with a selected span showing the "Logs" side panel with xLogs log lines filtered by trace_id]
 </div>
 
 ### Exercise 6.4 — Find Errors with TraceQL
 
-1. In Tempo Explore, select the **TraceQL** tab
+1. In xTraces Explore, select the **TraceQL** tab
 2. Enter:
 ```traceql
 {status = error}
@@ -178,9 +178,9 @@ These span metrics are available if you enable the **spanmetrics connector** in 
 
 ## Validation
 
-- [ ] Grafana Tempo search returns traces
+- [ ] xTraces search returns traces
 - [ ] You can click a trace and read the waterfall
-- [ ] Clicking a span shows "Logs for this span" from Loki
+- [ ] Clicking a span shows "Logs for this span" from xLogs
 - [ ] TraceQL `{status = error}` returns error traces
 - [ ] You can identify the slowest span in a trace
 
@@ -191,9 +191,9 @@ These span metrics are available if you enable the **spanmetrics connector** in 
 !!! success "Session 6.2 Summary"
     - A **trace** = a tree of spans representing one request's journey through all services
     - **Wide spans** = slow; **red spans** = errors — these are investigation starting points
-    - **TraceQL** queries Tempo: `{resource.service.name = "x" && duration > 500ms}`
+    - **TraceQL** queries xTraces: `{resource.service.name = "x" && duration > 500ms}`
     - The **service map** visualises call graphs built from trace data
-    - **Trace → Logs** correlation: clicking a span reveals Loki logs filtered by `trace_id`
+    - **Trace → Logs** correlation: clicking a span reveals xLogs logs filtered by `trace_id`
     - **RED metrics** (Rate, Errors, Duration) from traces provide service-level SLO visibility
 
 ---

@@ -45,11 +45,11 @@ By the end of Session 1, you will be able to:
 | Concept | Description |
 |---|---|
 | Control Plane | `portal-api`, `portal-web`, `agent-api` — manages configuration |
-| Data Plane | Envoy + `proxy-auth` + Mimir/Loki/Tempo — handles telemetry |
+| Data Plane | Envoy + `proxy-auth` + xMetrics/xLogs/xTraces — handles telemetry |
 | Multi-tenancy | `X-Scope-OrgID` header isolates data per tenant |
 | JWT Authentication | HS256, 30-minute TTL, stored in HttpOnly cookie |
 | Cognito Integration | AWS Cognito → exchange for xScaler JWT |
-| Three Signals | Metrics (Mimir), Logs (Loki), Traces (Tempo) |
+| Three Signals | Metrics (xMetrics), Logs (xLogs), Traces (xTraces) |
 
 ---
 

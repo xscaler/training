@@ -8,7 +8,7 @@ sequenceDiagram
     participant EN as Envoy :8080
     participant PA as proxy-auth
     participant PG as PostgreSQL
-    participant MI as Mimir :9009
+    participant MI as xMetrics :9009
     participant S3 as AWS S3
 
     COL->>EN: POST /api/v1/push\nAuthorization: Bearer xag_...\nContent-Type: application/x-protobuf\n[Snappy-encoded Prometheus protobufs]
@@ -41,7 +41,7 @@ sequenceDiagram
     participant COL as OTel Collector / Promtail
     participant EN as Envoy :8181
     participant PA as proxy-auth-logs
-    participant LO as Loki :3100
+    participant LO as xLogs :3100
     participant S3 as AWS S3
 
     COL->>EN: POST /loki/api/v1/push\nAuthorization: Bearer xag_...\nContent-Type: application/json
@@ -67,7 +67,7 @@ sequenceDiagram
     participant COL as OTel Collector
     participant EN as Envoy :8282/:4317
     participant PA as proxy-auth-traces
-    participant TE as Tempo :3200
+    participant TE as xTraces :3200
     participant S3 as AWS S3
 
     alt HTTP OTLP
@@ -89,14 +89,14 @@ sequenceDiagram
     EN->>COL: 200 OK
 ```
 
-## Query Flow (Grafana → Mimir)
+## Query Flow (Grafana → xMetrics)
 
 ```mermaid
 sequenceDiagram
     participant GR as Grafana
     participant EN as Envoy :8080
     participant PA as proxy-auth
-    participant MI as Mimir
+    participant MI as xMetrics
 
     GR->>EN: GET /prometheus/api/v1/query\nAuthorization: Bearer xag_...\nX-Scope-OrgID: xs_payment_abc12345\n?query=rate(http_requests_total[5m])
 

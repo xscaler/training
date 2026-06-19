@@ -136,7 +136,7 @@ graph TB
     end
 
     DS -->|HTTPS :443| EDGE
-    EDGE -->|MI / LO / TE| BACKENDS[Mimir / Loki / Tempo]
+    EDGE -->|MI / LO / TE| BACKENDS[xMetrics / xLogs / xTraces]
 ```
 
 ---

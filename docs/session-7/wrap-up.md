@@ -12,7 +12,7 @@ Congratulations on completing the xScaler Observability Platform Training! Over 
 
     **Session 1 — Platform Introduction**
     - xScaler two-tier architecture: control plane + edge data plane
-    - Component roles: portal-api, agent-api, Envoy, proxy-auth, Mimir, Loki, Tempo
+    - Component roles: portal-api, agent-api, Envoy, proxy-auth, xMetrics, xLogs, xTraces
     - Authentication: Cognito → JWT (30-min TTL) for users, SHA-256 API keys for collectors
     - Multi-tenant isolation via `X-Scope-OrgID` header
 
@@ -37,7 +37,7 @@ Congratulations on completing the xScaler Observability Platform Training! Over 
 
     **Session 5 — Grafana Integration**
     - Grafana's role: pure visualisation, not storage
-    - Three datasources: Prometheus (Mimir), Loki, Tempo
+    - Three datasources: Prometheus (xMetrics), xLogs, xTraces
     - Cross-signal correlation: trace → log → metric
     - Managed Grafana vs self-managed options
 
@@ -56,7 +56,7 @@ Congratulations on completing the xScaler Observability Platform Training! Over 
 | Concept | Quick Summary |
 |---|---|
 | **Control Plane** | portal-api + portal-web + agent-api — manages configuration, not data |
-| **Data Plane** | Envoy + proxy-auth + Mimir/Loki/Tempo — handles all telemetry |
+| **Data Plane** | Envoy + proxy-auth + xMetrics/xLogs/xTraces — handles all telemetry |
 | **X-Scope-OrgID** | The tenant namespace header — set by proxy-auth, never trusted from client |
 | **ext_authz** | Envoy delegates auth to proxy-auth via gRPC before forwarding any request |
 | **fail-closed** | If proxy-auth is unavailable, ALL requests are denied (security by default) |
@@ -65,10 +65,10 @@ Congratulations on completing the xScaler Observability Platform Training! Over 
 | **xag_ key** | Per-agent API key — created during enrollment, unique to each agent |
 | **${secret:NAME}** | Config template placeholder resolved via AWS KMS at delivery time |
 | **NOTIFY/LISTEN** | PostgreSQL mechanism for near-real-time config push to agent-api |
-| **Mimir** | Multi-tenant metrics: `multitenancy_enabled: true`, port 9009 |
-| **Loki** | Multi-tenant logs: `auth_enabled: true`, HTTP 3100, gRPC 9095 |
-| **Tempo** | Multi-tenant traces: `multitenancy_enabled: true`, HTTP 3200 |
-| **mimir-sync** | Polls Mimir every 60s for usage → writes PostgreSQL rollup tables |
+| **xMetrics** | Multi-tenant metrics: `multitenancy_enabled: true`, port 9009 |
+| **xLogs** | Multi-tenant logs: `auth_enabled: true`, HTTP 3100, gRPC 9095 |
+| **xTraces** | Multi-tenant traces: `multitenancy_enabled: true`, HTTP 3200 |
+| **mimir-sync** | Polls xMetrics every 60s for usage → writes PostgreSQL rollup tables |
 | **Four golden signals** | Latency, Traffic, Errors, Saturation — the foundation of SRE alerting |
 
 ---
@@ -115,9 +115,9 @@ Congratulations on completing the xScaler Observability Platform Training! Over 
 - [OpenTelemetry Docs](https://opentelemetry.io/docs/) — OTel SDK and Collector reference
 - [Grafana Documentation](https://grafana.com/docs/) — Dashboard and alerting reference
 - [Prometheus Documentation](https://prometheus.io/docs/) — PromQL reference
-- [Grafana Mimir Documentation](https://grafana.com/docs/mimir/) — Mimir architecture
-- [Grafana Loki Documentation](https://grafana.com/docs/loki/) — LogQL reference
-- [Grafana Tempo Documentation](https://grafana.com/docs/tempo/) — TraceQL reference
+- [xMetrics Documentation](https://grafana.com/docs/mimir/) — xMetrics architecture
+- [xLogs Documentation](https://grafana.com/docs/loki/) — LogQL reference
+- [xTraces Documentation](https://grafana.com/docs/tempo/) — TraceQL reference
 
 ### Support Channels
 

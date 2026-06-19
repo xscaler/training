@@ -12,13 +12,13 @@ curl -s http://localhost:8081/health | jq .
 # agent-api health
 curl -s http://localhost:8082/health | jq .
 
-# Mimir health
+# xMetrics health
 curl -s http://localhost:9009/ready
 
-# Loki health
+# xLogs health
 curl -s http://localhost:3100/ready
 
-# Tempo health
+# xTraces health
 curl -s http://localhost:3200/ready
 
 # Envoy admin stats
@@ -98,7 +98,7 @@ curl -s http://localhost:9901/stats | grep "upstream_rq_total"
 
 ??? failure "Metrics not appearing in Grafana"
     ```bash
-    # 1. Check Mimir has received data
+    # 1. Check xMetrics has received data
     curl -s "http://localhost:9009/prometheus/api/v1/query" \
       -H "X-Scope-OrgID: $TENANT_ID" \
       --data-urlencode 'query=count({__name__=~".+"})' | jq '.data.result'
@@ -106,11 +106,11 @@ curl -s http://localhost:9901/stats | grep "upstream_rq_total"
     # 2. Check OTel collector exporter
     docker compose logs otel-collector | grep "prometheusremotewrite" | tail -10
 
-    # 3. Check Mimir ingestion errors
+    # 3. Check xMetrics ingestion errors
     docker compose logs client-mimir | grep "error\|Error" | tail -20
     ```
 
-??? failure "Mimir returns 400 snappy decoding error"
+??? failure "xMetrics returns 400 snappy decoding error"
     The remote_write request must be snappy-encoded. Use the OTel Collector `prometheusremotewrite` exporter — it handles encoding automatically.
 
 ??? failure "429 Too Many Requests"
@@ -124,16 +124,16 @@ curl -s http://localhost:9901/stats | grep "upstream_rq_total"
 
 ## Logs Pipeline Issues
 
-??? failure "Loki push returns 400"
+??? failure "xLogs push returns 400"
     Check the timestamp format — must be nanoseconds (19 digits):
     ```bash
     # macOS: brew install coreutils then use gdate
     date +%s%N       # Should return 19-digit number
     ```
 
-??? failure "Loki streams not found in Grafana"
+??? failure "xLogs streams not found in Grafana"
     ```bash
-    # Check Loki labels exist
+    # Check xLogs labels exist
     curl -s "http://localhost:3100/loki/api/v1/labels" \
       -H "X-Scope-OrgID: $TENANT_ID" | jq .
     ```
@@ -142,7 +142,7 @@ curl -s http://localhost:9901/stats | grep "upstream_rq_total"
 
 ## Traces Pipeline Issues
 
-??? failure "Tempo push returns 403"
+??? failure "xTraces push returns 403"
     Verify API key has access to traces:
     ```bash
     curl -v http://localhost:8282/v1/traces \
