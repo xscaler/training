@@ -426,4 +426,4 @@ curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/query" \
 ---
 
 *← Previous: [Session 7 Overview](overview.md)*  
-*Next: [Wrap-Up →](wrap-up.mdx)*
+*Next: [Wrap-Up →](wrap-up.md)*

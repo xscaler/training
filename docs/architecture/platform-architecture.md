@@ -165,5 +165,5 @@ Phase 2: xag_ key → receive config YAML (with secrets resolved)
 
 ---
 
-*← Previous: [Wrap-Up](../session-7/wrap-up.mdx)*  
+*← Previous: [Wrap-Up](../session-7/wrap-up.md)*  
 *Next: [Telemetry Flow →](telemetry-flow.md)*

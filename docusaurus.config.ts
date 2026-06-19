@@ -11,8 +11,8 @@ const config: Config = {
     v4: true,
   },
 
-  url: 'https://xscaler.github.io',
-  baseUrl: '/training/',
+  url: 'https://learn.xscalerlabs.com',
+  baseUrl: '/',
 
   organizationName: 'xscaler',
   projectName: 'training',
