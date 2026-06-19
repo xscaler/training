@@ -18,12 +18,12 @@ graph TB
     end
 
     subgraph "Option B: Agent Mode"
-        APP_B[Application + OTel SDK] -->|OTLP| COL_B[OTel Collector (co-located)]
+        APP_B[Application + OTel SDK] -->|OTLP| COL_B["OTel Collector (co-located)"]
         COL_B -->|OTLP / PRW| XS_B[xScaler Edge]
     end
 
     subgraph "Option C: Gateway Mode"
-        APP_C1[App 1 + OTel SDK] -->|OTLP| GW[OTel Gateway (centralised)]
+        APP_C1[App 1 + OTel SDK] -->|OTLP| GW["OTel Gateway (centralised)"]
         APP_C2[App 2 + OTel SDK] -->|OTLP| GW
         APP_C3[App 3 + OTel SDK] -->|OTLP| GW
         GW -->|OTLP / PRW| XS_C[xScaler Edge]
