@@ -758,7 +758,7 @@ PUT /agents/configs/{template_id}/assignments
 
 **Talking Points:**
 
-"Grafana is the standard open-source visualisation layer for the LGTM stack. xScaler uses Grafana as the UI for:
+"Grafana is the standard open-source visualisation layer for the xScaler observability stack. xScaler uses Grafana as the UI for:
 - Querying and visualising metrics (with PromQL)
 - Searching and visualising logs (with LogQL)
 - Exploring traces (with TraceQL)

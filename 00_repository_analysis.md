@@ -8,7 +8,7 @@
 
 ## 1. Executive Summary
 
-The xScaler Observability Platform is a production-grade, multi-tenant SaaS platform for metrics, logs, and traces observability. It is deployed across a **control plane cluster** and multiple **regional edge data-plane clusters**, orchestrated via ArgoCD GitOps. The platform is built on open-source Grafana LGTM-stack components (Mimir, Loki, Tempo) wrapped with proprietary authentication, billing, and agent management layers.
+The xScaler Observability Platform is a production-grade, multi-tenant SaaS platform for metrics, logs, and traces observability. It is deployed across a **control plane cluster** and multiple **regional edge data-plane clusters**, orchestrated via ArgoCD GitOps. The platform is built on open-source xScaler's telemetry backends (xMetrics, xLogs, xTraces) wrapped with proprietary authentication, billing, and agent management layers.
 
 ---
 

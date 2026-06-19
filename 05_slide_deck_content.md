@@ -27,7 +27,7 @@ Each slide is formatted as:
 **Speaker Notes:**  
 Welcome participants. Introduce yourself — your background and experience with the platform. Set expectations: this is a 2-day practical training. By day 2, participants will have hands-on experience with the full stack.
 
-**Visual:** xScaler logo, Grafana LGTM stack component logos (Mimir, Loki, Tempo, Grafana)
+**Visual:** xScaler logo, xScaler observability stack component logos (Mimir, Loki, Tempo, Grafana)
 
 ---
 
@@ -60,7 +60,7 @@ Walk through the agenda. Mention that each session has hands-on components. Labs
 **Key Points:**
 - Multi-tenant SaaS Observability Platform
 - Metrics, Logs, and Traces as a managed service
-- Built on Grafana LGTM stack (Loki, Grafana, Tempo, Mimir)
+- Built on xScaler's telemetry backends (xLogs, Grafana, xTraces, xMetrics)
 - No infrastructure to manage — use your data, not your time
 - Pay for what you use — metered billing
 

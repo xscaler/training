@@ -58,7 +58,7 @@ For this training, you will use a pre-configured local xScaler stack running via
 
 ### 1.1 Platform Overview
 
-The xScaler Observability Platform provides Metrics, Logs, and Traces as a managed service. It is built on the Grafana LGTM stack (Loki, Grafana, Tempo, Mimir) with proprietary layers for multi-tenancy, authentication, billing, and agent management.
+The xScaler Observability Platform provides Metrics, Logs, and Traces as a managed service. It is built on the xScaler's telemetry backends (xLogs, Grafana, xTraces, xMetrics) with proprietary layers for multi-tenancy, authentication, billing, and agent management.
 
 **[Screenshot placeholder: xScaler Portal home page showing org dashboard with metrics, logs, and traces overview cards]**
 

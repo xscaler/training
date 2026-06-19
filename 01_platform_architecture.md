@@ -5,7 +5,7 @@
 
 ## 1. Platform Overview
 
-xScaler is a **multi-tenant SaaS Observability Platform** that provides Metrics, Logs, and Traces (MLT) as a managed service. It is built on top of the Grafana LGTM stack (Loki, Grafana, Tempo, Mimir) and wraps it with proprietary multi-tenancy, authentication, billing, and agent management layers.
+xScaler is a **multi-tenant SaaS Observability Platform** that provides Metrics, Logs, and Traces (MLT) as a managed service. It is built on top of the xScaler's telemetry backends (xLogs, Grafana, xTraces, xMetrics) and wraps it with proprietary multi-tenancy, authentication, billing, and agent management layers.
 
 ### Key Design Principles
 
