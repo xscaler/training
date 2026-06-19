@@ -126,7 +126,7 @@ graph TB
         subgraph "Credentials"
             K8S[Kubernetes Secret:\nxscaler-credentials]
         end
-        SVC1 & SVC2 & SVC3 -->|OTLP <edge>.t.xscalerlabs.com:4317| DS
+        SVC1 & SVC2 & SVC3 -->|OTLP| DS
         K8S -.->|env vars| DS
     end
 

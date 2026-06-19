@@ -64,11 +64,11 @@ One OTel Collector per node, deployed as a **DaemonSet**. Applications send OTLP
 ```mermaid
 graph TB
     subgraph "Kubernetes Node 1"
-        APP1[App Pod\n+ OTel SDK] -->|OTLP <edge>.t.xscalerlabs.com:4317| COL1[OTel Collector\nDaemonSet Pod]
-        APP2[App Pod\n+ OTel SDK] -->|OTLP <edge>.t.xscalerlabs.com:4317| COL1
+        APP1[App Pod\n+ OTel SDK] -->|OTLP| COL1[OTel Collector\nDaemonSet Pod]
+        APP2[App Pod\n+ OTel SDK] -->|OTLP| COL1
     end
     subgraph "Kubernetes Node 2"
-        APP3[App Pod\n+ OTel SDK] -->|OTLP <edge>.t.xscalerlabs.com:4317| COL2[OTel Collector\nDaemonSet Pod]
+        APP3[App Pod\n+ OTel SDK] -->|OTLP| COL2[OTel Collector\nDaemonSet Pod]
     end
 
     COL1 & COL2 -->|HTTPS| XS[xScaler Edge Cluster]
