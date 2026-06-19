@@ -1,7 +1,7 @@
 site_name: xScaler Observability Platform — Training
 site_description: Complete instructor-led training for the xScaler multi-tenant SaaS observability platform
 site_author: xScaler Platform Team
-site_url: https://xscalerlabs.github.io/training/
+site_url: https://xscaler.github.io/training/
 
 theme:
   name: material
