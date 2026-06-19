@@ -1,0 +1,133 @@
+# xScaler Observability Platform — Training
+
+<div class="screenshot-placeholder">
+[Banner: xScaler logo + tagline "Multi-Tenant Observability for Modern Infrastructure"]
+</div>
+
+Welcome to the **xScaler Observability Platform Training Programme**. This two-day instructor-led course gives platform administrators, DevOps engineers, and SRE teams everything they need to deploy, configure, and operate the xScaler platform in production.
+
+---
+
+## What You Will Learn
+
+=== "Day 1"
+
+    | Session | Topic | Duration |
+    |---|---|---|
+    | 1 | Platform Introduction and User Management | 2 hours |
+    | 2 | OpenTelemetry Fundamentals | 2 hours |
+    | 3 | Data Collection Architecture | 2 hours |
+
+=== "Day 2"
+
+    | Session | Topic | Duration |
+    |---|---|---|
+    | 4 | Tenant Setup and Agent Deployment | 2 hours |
+    | 5 | Grafana Integration | 1.5 hours |
+    | 6 | Dashboards, APM and Alerting | 2 hours |
+    | 7 | Hands-On Lab and Q&A | 2 hours |
+
+---
+
+## Platform at a Glance
+
+xScaler is a **production-grade, multi-tenant SaaS observability platform** built on the Grafana LGTM stack:
+
+```mermaid
+graph LR
+    subgraph Signals
+        M[📊 Metrics]
+        L[📄 Logs]
+        T[🔍 Traces]
+    end
+    subgraph LGTM Stack
+        MI[Mimir]
+        LO[Loki]
+        TE[Tempo]
+        GR[Grafana]
+    end
+    M --> MI
+    L --> LO
+    T --> TE
+    MI & LO & TE --> GR
+```
+
+| Component | Role |
+|---|---|
+| **Grafana Mimir** | Multi-tenant long-term metrics storage |
+| **Grafana Loki** | Multi-tenant log aggregation |
+| **Grafana Tempo** | Distributed trace storage |
+| **Grafana** | Visualisation, dashboards, alerting |
+| **Envoy** | Edge gateway — authentication + routing |
+| **proxy-auth** | API key validation and rate limiting |
+| **agent-api** | OpenTelemetry agent management (OpAMP) |
+| **portal-api** | Control plane REST API |
+| **portal-web** | Self-service web portal |
+
+---
+
+## Who This Training Is For
+
+- **Platform Administrators** — Deploying and managing the xScaler control plane
+- **DevOps Engineers** — Instrumenting services and deploying OTel collectors
+- **SRE Engineers** — Operating multi-tenant observability in production
+- **Operations Teams** — Day-to-day tenant management and incident response
+
+---
+
+## Prerequisites
+
+!!! info "Before You Begin"
+    - Linux/macOS command line proficiency
+    - Docker and `docker compose` installed
+    - Basic understanding of Kubernetes
+    - Familiarity with YAML configuration files
+    - Access to the training environment (credentials provided by your instructor)
+
+---
+
+## Training Environment
+
+Your instructor will provide environment credentials. The local development stack exposes:
+
+| Service | URL | Purpose |
+|---|---|---|
+| Portal UI | `http://localhost:3000` | Web portal |
+| Portal API | `http://localhost:8081` | Control plane API |
+| Agent API (OpAMP) | `ws://localhost:8082/v1/opamp` | Agent management |
+| Metrics ingestion | `http://localhost:8080` | Envoy → Mimir |
+| Logs ingestion | `http://localhost:8181` | Envoy → Loki |
+| Traces ingestion | `http://localhost:8282` | Envoy → Tempo |
+| Traces (gRPC) | `grpc://localhost:4317` | Envoy → Tempo |
+| Grafana | `http://localhost:3001` | Dashboards |
+
+---
+
+## How to Use This Site
+
+Navigate using the **sidebar** on the left, the **tabs** at the top, or the **Previous / Next** buttons at the bottom of each page.
+
+Each page follows a consistent structure:
+
+1. **Learning Objectives** — what you will be able to do
+2. **Concepts** — the theory behind the feature
+3. **Architecture** — how it fits into the platform
+4. **Examples** — real configuration and code
+5. **Hands-On Exercise** — practise in your environment
+6. **Validation** — confirm your work is correct
+7. **Troubleshooting** — common issues and fixes
+8. **Key Takeaways** — summary for review
+
+---
+
+## Quick Links
+
+- [Architecture Reference](architecture/platform-architecture.md)
+- [Lab Guides](labs/lab-01-tenant-creation.md)
+- [Troubleshooting](appendix/troubleshooting.md)
+- [API Examples](appendix/api-examples.md)
+- [Collector Configurations](appendix/collector-configurations.md)
+
+---
+
+*Next: [Getting Started →](getting-started.md)*

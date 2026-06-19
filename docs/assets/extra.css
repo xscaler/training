@@ -1,0 +1,42 @@
+/* xScaler Training Site — Custom Styles */
+
+:root {
+  --xs-brand: #5c6bc0;
+  --xs-accent: #7e57c2;
+}
+
+/* Screenshot placeholder styling */
+.screenshot-placeholder {
+  border: 2px dashed var(--xs-brand);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  background: rgba(92, 107, 192, 0.06);
+  color: var(--xs-brand);
+  font-style: italic;
+  margin: 1.5rem 0;
+}
+
+/* Navigation footer emphasis */
+.md-footer-nav__title {
+  font-weight: 600;
+}
+
+/* Lab step counter */
+.lab-steps ol {
+  counter-reset: lab-step;
+}
+.lab-steps ol li {
+  counter-increment: lab-step;
+}
+
+/* Admonition icons for training-specific callouts */
+.md-typeset .admonition.trainer,
+.md-typeset details.trainer {
+  border-color: #ff8f00;
+}
+.md-typeset .trainer > .admonition-title,
+.md-typeset .trainer > summary {
+  background-color: rgba(255, 143, 0, 0.1);
+  border-color: #ff8f00;
+}
