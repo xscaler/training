@@ -210,15 +210,15 @@ http_status_code (200/400/500 = ~10 grouped values)
 
 ```bash
 # 1. Check the Prometheus endpoint of xMetrics
-curl -s http://localhost:9009/metrics | head -20
+curl -s https://<edge>.m.xscalerlabs.com/metrics | head -20
 
 # 2. Query active series count via PromQL
-curl -s "http://localhost:9009/prometheus/api/v1/query" \
+curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/query" \
   -H "X-Scope-OrgID: system-monitoring" \
   --data-urlencode 'query=count({__name__=~".+"})' | jq '.data.result'
 
 # 3. Check scrape targets
-curl -s "http://localhost:9009/prometheus/api/v1/targets" \
+curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/targets" \
   -H "X-Scope-OrgID: system-monitoring" | jq '.data.activeTargets | length'
 ```
 
@@ -227,7 +227,7 @@ curl -s "http://localhost:9009/prometheus/api/v1/targets" \
 ```bash
 # Send a metric via Prometheus remote_write to the local xMetrics
 # (requires snappy-encoded protobuf in production, but xMetrics accepts JSON for dev)
-curl -s -X POST "http://localhost:8080/api/v1/push" \
+curl -s -X POST "https://<edge>.m.xscalerlabs.com/api/v1/push" \
   -H "Authorization: Bearer $API_KEY" \
   -H "Content-Type: application/x-protobuf" \
   -H "X-Prometheus-Remote-Write-Version: 0.1.0"

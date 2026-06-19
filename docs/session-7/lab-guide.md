@@ -13,7 +13,7 @@ This lab walks through the complete xScaler platform workflow from a fresh tenan
 
 - [ ] Local dev stack is running: `docker compose ps` shows all services healthy
 - [ ] JWT token from signup: `export JWT_TOKEN=...`
-- [ ] Portal base URL: `export PORTAL_BASE="http://localhost:8081"`
+- [ ] Portal base URL: `export PORTAL_BASE="https://portal.xscalerlabs.com"`
 
 ---
 
@@ -92,7 +92,7 @@ curl -s $PORTAL_BASE/tenants/$TENANT_ID/keys \
 
 ```bash
 # Send metrics via OTLP JSON format
-curl -s -X POST "http://localhost:8080/otlp/v1/metrics" \
+curl -s -X POST "https://<edge>.m.xscalerlabs.com/otlp/v1/metrics" \
   -H "Authorization: Bearer $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -127,7 +127,7 @@ curl -s -X POST "http://localhost:8080/otlp/v1/metrics" \
 
 ```bash
 # Send logs via xLogs push API
-curl -s -X POST "http://localhost:8181/loki/api/v1/push" \
+curl -s -X POST "https://<edge>.l.xscalerlabs.com/loki/api/v1/push" \
   -H "Authorization: Bearer $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -154,7 +154,7 @@ SPAN_ID=$(openssl rand -hex 8)
 NOW_NS=$(date +%s%N)
 END_NS=$((NOW_NS + 150000000))  # +150ms
 
-curl -s -X POST "http://localhost:8282/v1/traces" \
+curl -s -X POST "https://<edge>.t.xscalerlabs.com/v1/traces" \
   -H "Authorization: Bearer $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -192,14 +192,14 @@ echo "Trace ID: $TRACE_ID"
 ```bash
 # Verify metrics
 echo "=== Metrics ==="
-curl -s "http://localhost:9009/prometheus/api/v1/query" \
+curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/query" \
   -H "X-Scope-OrgID: $TENANT_ID" \
   --data-urlencode 'query=lab7_requests_total' | jq '.data.result | length'
 # Expected: 1 (series found)
 
 # Verify logs
 echo "=== Logs ==="
-curl -s "http://localhost:3100/loki/api/v1/query" \
+curl -s "https://<edge>.l.xscalerlabs.com/loki/api/v1/query" \
   -H "X-Scope-OrgID: $TENANT_ID" \
   --data-urlencode 'query={service="lab7-service"}' \
   --data-urlencode 'limit=5' | jq '.data.result | length'
@@ -207,7 +207,7 @@ curl -s "http://localhost:3100/loki/api/v1/query" \
 
 # Verify traces (check xTraces)
 echo "=== Traces ==="
-curl -s "http://localhost:3200/api/traces/$TRACE_ID" \
+curl -s "https://<edge>.t.xscalerlabs.com/api/traces/$TRACE_ID" \
   -H "X-Scope-OrgID: $TENANT_ID" | jq '.batches | length'
 # Expected: 1
 ```
@@ -220,13 +220,13 @@ curl -s "http://localhost:3200/api/traces/$TRACE_ID" \
 
 ### Step 3.1 — Verify Grafana Access
 
-Open `http://localhost:3001` — login: `admin` / `admin`
+Open `https://<slug>.g.xscalerlabs.com` — login: `admin` / `admin`
 
 ### Step 3.2 — Create a Dashboard via API
 
 ```bash
 # Create the Lab7 dashboard via Grafana API
-curl -s -X POST "http://localhost:3001/api/dashboards/db" \
+curl -s -X POST "https://<slug>.g.xscalerlabs.com/api/dashboards/db" \
   -u "admin:admin" \
   -H "Content-Type: application/json" \
   -d '{
@@ -285,7 +285,7 @@ $TRACE_ID
 
 ```bash
 # Create a simple alert that will fire (always-true condition for testing)
-curl -s -X POST "http://localhost:3001/api/v1/provisioning/alert-rules" \
+curl -s -X POST "https://<slug>.g.xscalerlabs.com/api/v1/provisioning/alert-rules" \
   -u "admin:admin" \
   -H "Content-Type: application/json" \
   -d '{
@@ -354,18 +354,18 @@ curl -s $PORTAL_BASE/tenants/$TENANT_ID/keys \
   -H "Authorization: Bearer $JWT_TOKEN" | jq 'length // 0'
 
 echo "3. Metrics ingested:"
-curl -s "http://localhost:9009/prometheus/api/v1/query" \
+curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/query" \
   -H "X-Scope-OrgID: $TENANT_ID" \
   --data-urlencode 'query=lab7_requests_total' | jq '.data.result | length // 0'
 
 echo "4. Logs ingested:"
-curl -s "http://localhost:3100/loki/api/v1/query" \
+curl -s "https://<edge>.l.xscalerlabs.com/loki/api/v1/query" \
   -H "X-Scope-OrgID: $TENANT_ID" \
   --data-urlencode 'query={service="lab7-service"}' \
   --data-urlencode 'limit=1' | jq '.data.result | length // 0'
 
 echo "5. Traces ingested:"
-curl -s "http://localhost:3200/api/traces/$TRACE_ID" \
+curl -s "https://<edge>.t.xscalerlabs.com/api/traces/$TRACE_ID" \
   -H "X-Scope-OrgID: $TENANT_ID" | jq '.batches | length // 0'
 ```
 
@@ -379,7 +379,7 @@ curl -s "http://localhost:3200/api/traces/$TRACE_ID" \
     Re-export the API key:
     ```bash
     # Check if the key is still valid
-    curl -v http://localhost:8080/api/v1/query \
+    curl -v https://<edge>.m.xscalerlabs.com/api/v1/query \
       -H "Authorization: Bearer $API_KEY" \
       --data-urlencode 'query=up' 2>&1 | grep "< HTTP"
     ```
@@ -402,7 +402,7 @@ curl -s "http://localhost:3200/api/traces/$TRACE_ID" \
     Verify the tenant ID is correct in the datasource header. The local dev datasources use `${LOADGEN_GRAFANA_TENANT}` not your lab tenant.
     For local dev, query directly without Envoy routing:
     ```bash
-    curl -s "http://localhost:9009/prometheus/api/v1/query" \
+    curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/query" \
       -H "X-Scope-OrgID: $TENANT_ID" \
       --data-urlencode 'query=lab7_requests_total' | jq .
     ```

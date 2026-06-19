@@ -245,7 +245,7 @@ graph TD
 
 ```bash
 # 1. First, create a Grafana alert rule via API
-curl -s -X POST "http://localhost:3001/api/v1/provisioning/alert-rules" \
+curl -s -X POST "https://<slug>.g.xscalerlabs.com/api/v1/provisioning/alert-rules" \
   -u "admin:admin" \
   -H "Content-Type: application/json" \
   -d '{

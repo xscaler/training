@@ -65,7 +65,7 @@ xs_payment_ab3cd4ef
 
 === "Portal UI"
 
-    1. Navigate to `http://localhost:3000` → **Tenants** → **New Tenant**
+    1. Navigate to `https://portal.xscalerlabs.com` → **Tenants** → **New Tenant**
     2. Enter `Display Name` and select `Environment`
     3. Click **Create**
 
@@ -222,7 +222,7 @@ curl -s $PORTAL_BASE/dashboard/tenants/$TENANT_ID/usage \
 
 ```bash
 # Set up environment
-export PORTAL_BASE="http://localhost:8081"
+export PORTAL_BASE="https://portal.xscalerlabs.com"
 export JWT_TOKEN=$(curl -s -X POST $PORTAL_BASE/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"training@example.com","password":"Training123!"}' | jq -r '.token')

@@ -3,11 +3,11 @@
 ## Environment Setup
 
 ```bash
-export PORTAL_BASE="http://localhost:8081"
-export METRICS_BASE="http://localhost:8080"
-export LOGS_BASE="http://localhost:8181"
-export TRACES_BASE="http://localhost:8282"
-export GRAFANA_URL="http://localhost:3001"
+export PORTAL_BASE="https://portal.xscalerlabs.com"
+export METRICS_BASE="https://${EDGE}.m.xscalerlabs.com"
+export LOGS_BASE="https://${EDGE}.l.xscalerlabs.com"
+export TRACES_BASE="https://${EDGE}.t.xscalerlabs.com"
+export GRAFANA_URL="https://<your-org-slug>.g.xscalerlabs.com"
 
 # Authenticate
 export JWT_TOKEN=$(curl -s -X POST $PORTAL_BASE/auth/login \
@@ -136,7 +136,7 @@ curl -s -X POST "$TRACES_BASE/v1/traces" \
   }'
 
 # Query trace by ID
-curl -s "http://localhost:3200/api/traces/$TRACE_ID" \
+curl -s "https://<edge>.t.xscalerlabs.com/api/traces/$TRACE_ID" \
   -H "X-Scope-OrgID: $TENANT_ID" | jq '.batches | length'
 ```
 

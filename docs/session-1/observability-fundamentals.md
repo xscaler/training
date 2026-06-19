@@ -4,7 +4,7 @@
 
 - [ ] Define the three pillars of observability: metrics, logs, and traces
 - [ ] Explain which xScaler component handles each signal
-- [ ] Describe the Grafana LGTM stack and how it maps to each signal
+- [ ] Describe the xScaler backend stack and how it maps to each signal
 - [ ] Use basic PromQL, LogQL, and TraceQL queries in Grafana
 
 ---
@@ -150,16 +150,16 @@ gantt
 
 ---
 
-## The Grafana LGTM Stack
+## The xScaler Observability Stack
 
-LGTM is the acronym for the four open-source components that form the xScaler observability backend:
+xScaler combines four components to form a complete observability backend:
 
-| Letter | Component | Signal | Port(s) |
-|---|---|---|---|
-| **L** | xLogs | Logs | HTTP :3100, gRPC :9095 |
-| **G** | Grafana | Visualisation | :3001 |
-| **T** | xTraces | Traces | HTTP :3200, gRPC :9095 |
-| **M** | xMetrics | Metrics | :9009 |
+| Component | Signal | Access |
+|---|---|---|
+| **xLogs** | Logs | `https://<edge>.l.xscalerlabs.com` |
+| **Grafana** | Visualisation | `https://<slug>.g.xscalerlabs.com` |
+| **xTraces** | Traces | `https://<edge>.t.xscalerlabs.com` |
+| **xMetrics** | Metrics | `https://<edge>.m.xscalerlabs.com` |
 
 ```mermaid
 graph TB
@@ -212,7 +212,7 @@ Google SRE popularised the concept of four signals that, together, describe the 
 
 ### Exercise 1.5 — Explore Grafana Datasources
 
-1. Open Grafana at `http://localhost:3001`
+1. Open Grafana at `https://<slug>.g.xscalerlabs.com`
 2. Navigate to **Connections → Data Sources**
 
 <div class="screenshot-placeholder">
@@ -259,7 +259,7 @@ This returns `1` for every scrape target that is reachable.
 
 ## Validation
 
-- [ ] Grafana is accessible at `http://localhost:3001`
+- [ ] Grafana is accessible at `https://<slug>.g.xscalerlabs.com`
 - [ ] All four datasources show green status (✓) in Connections → Data Sources
 - [ ] `up` query in Explore returns results from `client-mimir`
 - [ ] A LogQL query returns log lines in the xLogs Explore view
@@ -281,7 +281,7 @@ This returns `1` for every scrape target that is reachable.
 
 ??? failure "xLogs datasource connection error"
     ```bash
-    curl -s http://localhost:3100/ready
+    curl -s https://<edge>.l.xscalerlabs.com/ready
     docker compose logs client-loki --tail=20
     ```
 

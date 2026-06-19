@@ -154,7 +154,7 @@ jsonData:
 
 ### Exercise 5.1 — Explore Pre-Provisioned Datasources
 
-1. Open Grafana at `http://localhost:3001`
+1. Open Grafana at `https://<slug>.g.xscalerlabs.com`
 2. Navigate to **Connections → Data Sources**
 
 <div class="screenshot-placeholder">

@@ -72,12 +72,12 @@ For local development without AWS Cognito, portal-api provides a direct signup/l
 
 ```bash
 # Sign up
-curl -s -X POST http://localhost:8081/auth/signup \
+curl -s -X POST https://portal.xscalerlabs.com/auth/signup \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@example.com","password":"Dev123!","name":"Admin"}' | jq .
 
 # Login
-curl -s -X POST http://localhost:8081/auth/login \
+curl -s -X POST https://portal.xscalerlabs.com/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@example.com","password":"Dev123!"}' | jq .
 ```
@@ -186,7 +186,7 @@ graph TD
 
 ```bash
 # Set base URL
-export PORTAL_BASE="http://localhost:8081"
+export PORTAL_BASE="https://portal.xscalerlabs.com"
 
 # 1. Sign up and get a JWT token
 RESPONSE=$(curl -s -X POST $PORTAL_BASE/auth/signup \
@@ -243,7 +243,7 @@ echo "SAVE THIS KEY — it will not be shown again!"
 - [ ] `curl $PORTAL_BASE/org -H "Authorization: Bearer $JWT_TOKEN"` returns your organisation details
 - [ ] Tenant is listed: `curl $PORTAL_BASE/tenants -H "Authorization: Bearer $JWT_TOKEN" | jq '.[].id'`
 - [ ] API key was printed to terminal and saved
-- [ ] Portal UI at `http://localhost:3000` shows your tenant in the dashboard
+- [ ] Portal UI at `https://portal.xscalerlabs.com` shows your tenant in the dashboard
 
 ---
 

@@ -1,294 +1,134 @@
 # Getting Started
 
-## Learning Objectives
+## Prerequisites
 
-By the end of this section you will be able to:
-
-- [ ] Clone and start the xScaler local development stack
-- [ ] Verify all services are healthy
-- [ ] Access the portal UI and API
-- [ ] Create your first organisation account
-- [ ] Understand the training environment topology
+!!! info "What You Need"
+    - A modern web browser (Chrome, Firefox, or Edge)
+    - `curl` and `jq` installed for lab exercises
+    - An OpenTelemetry Collector or SDK for hands-on ingestion labs
+    - Training environment credentials provided by your instructor
 
 ---
 
-## Environment Setup
+## Accessing the Portal
 
-### Prerequisites
+The xScaler portal is your central control plane for managing tenants, API keys, agents, and usage.
 
-!!! warning "Required Software"
-    Install all tools before the training begins. You will not have time to install them during class.
+**Production URL:** `https://portal.xscalerlabs.com`
 
-=== "macOS"
+<div class="screenshot-placeholder">
+[Screenshot: xScaler portal login page]
+</div>
 
-    ```bash
-    # Install Homebrew (if not already installed)
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-    # Install Docker Desktop
-    brew install --cask docker
-
-    # Install CLI tools
-    brew install curl jq git
-
-    # Verify Docker is running
-    docker info | grep "Server Version"
-    ```
-
-=== "Linux (Ubuntu/Debian)"
-
-    ```bash
-    # Install Docker Engine
-    curl -fsSL https://get.docker.com | sh
-    sudo usermod -aG docker $USER
-    newgrp docker
-
-    # Install CLI tools
-    sudo apt-get install -y curl jq git
-
-    # Verify
-    docker info | grep "Server Version"
-    ```
+Your instructor will provide login credentials for the shared training organisation. Once logged in you will see the organisation dashboard with your tenants, usage metrics, and agent fleet.
 
 ---
 
-## Clone the Repository
+## Production Endpoints
 
-```bash
-git clone https://github.com/xscalerlabs/xscaler.git
-cd xscaler
-```
+xScaler uses a two-tier architecture. The **control plane** is global; **edge endpoints** are regional and provided by your instructor.
 
----
+### Control Plane
 
-## Configure the Environment
+| Service | URL |
+|---|---|
+| Portal | `https://portal.xscalerlabs.com` |
+| Agent API (OpAMP) | `wss://agents.xscalerlabs.com/v1/opamp` |
 
-```bash
-# Copy the example environment file
-cp .env.example .env
-```
+### Edge Data Plane (per-region)
 
-For local training, the defaults in `.env.example` are sufficient. The file pre-configures:
+Your instructor will give you the edge hostname for today's training (`<edge>` below).
 
-| Variable | Value | Purpose |
+| Signal | OTLP HTTP | OTLP gRPC |
 |---|---|---|
-| `JWT_SIGNING_KEY` | `dev-signing-key` | HS256 JWT signing |
-| `DATABASE_URL` | `postgres://...` | PostgreSQL connection |
-| `LOADGEN_GRAFANA_TENANT` | `xs_loadgen_...` | Load generator tenant |
-| `STRIPE_SECRET_KEY` | (sandbox key from instructor) | Billing integration |
+| Metrics | `https://<edge>.m.xscalerlabs.com/otlp/v1/metrics` | — |
+| Logs | `https://<edge>.l.xscalerlabs.com/otlp/v1/logs` | — |
+| Traces | `https://<edge>.t.xscalerlabs.com/otlp/v1/traces` | `<edge>.t.xscalerlabs.com:4317` |
 
-!!! info "Stripe Sandbox Keys"
-    Your instructor will provide a Stripe sandbox key for the billing exercises.
-    Without it, billing features return mock data — all other platform features work normally.
-
----
-
-## Start the Stack
-
-```bash
-# Start all services in the background
-docker compose up -d
-
-# Watch startup logs
-docker compose logs -f --tail=50
-```
-
-The full stack starts approximately 25 services. Expect 60–90 seconds for all health checks to pass.
-
-### Verify All Services Are Up
-
-```bash
-docker compose ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
-```
-
-Expected output (all services should show `Up` or `healthy`):
-
-```
-NAME                    STATUS                    PORTS
-xscaler-portal-api-1    Up (healthy)              0.0.0.0:8081->8081/tcp
-xscaler-portal-web-1    Up                        0.0.0.0:3000->3000/tcp
-xscaler-agent-api-1     Up (healthy)              0.0.0.0:8082->8082/tcp
-xscaler-envoy-1         Up                        0.0.0.0:8080->8080/tcp, ...
-xscaler-client-mimir-1  Up (healthy)              0.0.0.0:9009->9009/tcp
-xscaler-client-loki-1   Up (healthy)              0.0.0.0:3100->3100/tcp
-xscaler-tempo-1         Up (healthy)              0.0.0.0:3200->3200/tcp
-xscaler-grafana-1       Up (healthy)              0.0.0.0:3001->3001/tcp
-xscaler-postgres-1      Up (healthy)              0.0.0.0:5432->5432/tcp
-```
+!!! tip "Example: EU West 1"
+    If your instructor assigns edge `euw1-01`, your logs endpoint is:
+    `https://euw1-01.l.xscalerlabs.com/otlp/v1/logs`
 
 ---
 
-## Verify Service Health
+## Lab Environment Variables
 
-Run these health checks to confirm each service is responding:
+Set these shell variables once at the start of each lab session. Replace `euw1-01` with your assigned edge.
 
 ```bash
-# Portal API
-curl -s http://localhost:8081/health | jq .
-# Expected: {"status":"ok"}
-
-# Agent API
-curl -s http://localhost:8082/health | jq .
-# Expected: {"status":"ok"}
-
-# xMetrics (tenant metrics)
-curl -s http://localhost:9009/ready
-# Expected: ready
-
-# xLogs (logs)
-curl -s http://localhost:3100/ready
-# Expected: ready
-
-# xTraces (traces)
-curl -s http://localhost:3200/ready
-# Expected: ready
+export PORTAL_BASE="https://portal.xscalerlabs.com"
+export EDGE="euw1-01"
+export METRICS_BASE="https://${EDGE}.m.xscalerlabs.com"
+export LOGS_BASE="https://${EDGE}.l.xscalerlabs.com"
+export TRACES_BASE="https://${EDGE}.t.xscalerlabs.com"
+export GRAFANA_URL="https://<your-org-slug>.g.xscalerlabs.com"
 ```
 
----
-
-## Seed Local Development Data
-
-The local dev stack requires a one-time seed for agent management:
+Obtain a JWT token for portal API calls:
 
 ```bash
-# Seed enrollment token and default config template
-docker compose exec postgres psql -U xscaler -d xscaler \
-  -f /scripts/agents/seed-local.sql
-```
-
-This seeds:
-
-- Enrollment token: `xse_localdev0000000000000000000000` (hash stored in DB)
-- Config template revision 1: minimal OTLP → debug pipeline
-- Assignment: empty label selector `{}` → matches all agents in the local org
-
----
-
-## Access the Training Services
-
-### Portal Web UI
-
-Open your browser and navigate to `http://localhost:3000`.
-
-<div class="screenshot-placeholder">
-[Screenshot: xScaler portal login page with email and password fields]
-</div>
-
-### Sign Up
-
-```bash
-# Or via API
-curl -s -X POST http://localhost:8081/auth/signup \
+export JWT_TOKEN=$(curl -s -X POST "$PORTAL_BASE/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{
-    "email": "training@example.com",
-    "password": "TrainingPass123!",
-    "name": "Training User"
-  }' | jq .
+  -d '{"email":"YOUR_EMAIL","password":"YOUR_PASSWORD"}' | jq -r '.token')
+
+echo "Token set: ${JWT_TOKEN:0:20}..."
 ```
 
-Expected response:
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "xs_org_abc123",
-    "email": "training@example.com",
-    "name": "Training User"
-  }
-}
-```
+!!! warning "Token Expiry"
+    JWT tokens expire after **30 minutes**. Re-run the login command if you get a `401` response.
 
-Save your JWT token:
-```bash
-export JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-export PORTAL_BASE="http://localhost:8081"
-```
+---
 
-### Grafana
+## Accessing Grafana
 
-Navigate to `http://localhost:3001` — Grafana is pre-provisioned with local dev datasources.
+Each organisation has a dedicated Grafana instance provisioned automatically.
+
+**URL pattern:** `https://<your-org-slug>.g.xscalerlabs.com`
+
+Your instructor will supply the exact URL and credentials for the training organisation.
 
 <div class="screenshot-placeholder">
-[Screenshot: Grafana home dashboard showing the pre-provisioned datasources panel]
+[Screenshot: Grafana home dashboard showing pre-configured datasources]
 </div>
 
+The training Grafana has three datasources pre-configured:
+- **xMetrics** — Prometheus-compatible metrics
+- **xLogs** — LogQL log queries
+- **xTraces** — TraceQL distributed traces
+
 ---
 
-## Training Environment Architecture
+## Quick Validation
 
-```mermaid
-graph TB
-    subgraph "Your Machine (Docker Compose)"
-        PW[portal-web :3000]
-        PA[portal-api :8081]
-        AA[agent-api :8082]
-        EN[envoy :8080/:8181/:8282/:4317]
-        PXM[proxy-auth :9001]
-        PXL[proxy-auth-logs :9001]
-        PXT[proxy-auth-traces :9001]
-        MI[client-mimir :9009]
-        LO[client-loki :3100]
-        TE[tempo :3200]
-        GR[grafana :3001]
-        PG[postgres :5432]
-        SM[system-mimir :9010]
-        OC[otel-collector]
-        AG[agent-1]
-    end
+Once your environment variables are set, verify each signal is reachable:
 
-    PW -->|REST| PA
-    AA -.->|NOTIFY/LISTEN| PG
-    EN -->|ext_authz gRPC| PXM
-    EN -->|ext_authz gRPC| PXL
-    EN -->|ext_authz gRPC| PXT
-    EN --> MI & LO & TE
-    OC -->|scrape| MI & EN & PXM & LO & TE
-    OC -->|remote_write| SM
-    AG -.->|OpAMP ws| AA
-    GR -->|query| MI & LO & TE
+```bash
+# Validate your API key by querying the portal
+curl -s "$PORTAL_BASE/api/portal/org/me" \
+  -H "Authorization: Bearer $JWT_TOKEN" | jq .name
+
+# Check metrics endpoint health
+curl -s "$METRICS_BASE/ready"
+
+# Check logs endpoint health
+curl -s "$LOGS_BASE/ready"
+
+# Check traces endpoint health
+curl -s "$TRACES_BASE/ready"
 ```
 
----
-
-## Troubleshooting
-
-??? failure "Services not starting"
-    Check Docker resource allocation. The full stack requires at minimum:
-    - 4 vCPUs
-    - 8 GB RAM
-    - 10 GB disk
-    
-    Increase via Docker Desktop → Settings → Resources
-
-??? failure "`connection refused` on port 8081"
-    portal-api is still starting. Wait 30 seconds and retry.
-    ```bash
-    docker compose logs portal-api --tail=20
-    ```
-
-??? failure "Database connection errors"
-    ```bash
-    docker compose restart postgres
-    docker compose restart portal-api
-    ```
-
-??? failure "xMetrics returns 500"
-    Check the block retention config:
-    ```bash
-    docker compose logs client-mimir --tail=30
-    ```
+Expected: each health check returns `ready`.
 
 ---
 
 ## Key Takeaways
 
 !!! success "Checkpoint"
-    - The local dev stack runs 25+ services using Docker Compose
-    - All services must be `healthy` before beginning lab exercises
-    - Environment variables in `.env` configure all service integrations
-    - A one-time seed script initialises agent management data
-    - JWT tokens expire after **30 minutes** — re-authenticate when they expire
+    - The portal lives at `https://portal.xscalerlabs.com`
+    - Edge endpoints are region-scoped: `<edge>.m/l/t.xscalerlabs.com`
+    - Set the five environment variables before starting any lab
+    - JWT tokens expire in 30 minutes — re-authenticate when they do
+    - Your Grafana is at `https://<org-slug>.g.xscalerlabs.com`
 
 ---
 

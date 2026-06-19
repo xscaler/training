@@ -14,7 +14,7 @@
 |---|---|---|
 | 0:00 – 0:30 | Platform introduction and architecture walkthrough | Presentation |
 | 0:30 – 1:00 | User management: roles, Cognito, JWT auth | Presentation + Demo |
-| 1:00 – 1:30 | Observability fundamentals: signals, LGTM stack | Presentation |
+| 1:00 – 1:30 | Observability fundamentals: metrics, logs, traces | Presentation |
 | 1:30 – 2:00 | Live portal demo + Q&A | Demo |
 
 ---
@@ -28,7 +28,7 @@ By the end of Session 1, you will be able to:
 - [ ] Explain the authentication flow from browser login to JWT
 - [ ] Navigate the portal UI: create an organisation, manage members
 - [ ] Define the three observability signals: metrics, logs, traces
-- [ ] Explain the Grafana LGTM stack and which component handles each signal
+- [ ] Explain which xScaler backend component handles each observability signal
 
 ---
 
@@ -36,7 +36,7 @@ By the end of Session 1, you will be able to:
 
 1. [Platform Introduction](platform-introduction.md) — architecture, components, deployment topology
 2. [User Management](user-management.md) — authentication, authorisation, roles, Cognito
-3. [Observability Fundamentals](observability-fundamentals.md) — metrics, logs, traces, LGTM stack
+3. [Observability Fundamentals](observability-fundamentals.md) — metrics, logs, traces and the xScaler stack
 
 ---
 
@@ -56,7 +56,7 @@ By the end of Session 1, you will be able to:
 ## Instructor Notes
 
 !!! tip "Trainer Guidance"
-    - Open the portal at `http://localhost:3000` during presentation
+    - Open the portal at `https://portal.xscalerlabs.com` during presentation
     - Walk through the UI live as you explain each component
     - Emphasise the separation between control plane and data plane — this is the single most important architectural concept
     - Students often conflate Grafana with the backend — clarify that Grafana is purely a visualisation layer

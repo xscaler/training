@@ -3,26 +3,23 @@
 ## Quick Diagnostic Commands
 
 ```bash
-# Check all service health
-docker compose ps --format "table {{.Name}}\t{{.Status}}"
-
 # portal-api health
-curl -s http://localhost:8081/health | jq .
+curl -s https://portal.xscalerlabs.com/health | jq .
 
 # agent-api health
-curl -s http://localhost:8082/health | jq .
+curl -s https://agents.xscalerlabs.com/health | jq .
 
 # xMetrics health
-curl -s http://localhost:9009/ready
+curl -s https://<edge>.m.xscalerlabs.com/ready
 
 # xLogs health
-curl -s http://localhost:3100/ready
+curl -s https://<edge>.l.xscalerlabs.com/ready
 
 # xTraces health
-curl -s http://localhost:3200/ready
+curl -s https://<edge>.t.xscalerlabs.com/ready
 
-# Envoy admin stats
-curl -s http://localhost:9901/stats | grep "upstream_rq_total"
+# Envoy admin stats (platform operators only — requires cluster access)
+curl -s http://<envoy-admin>/stats | grep "upstream_rq_total"
 ```
 
 ---
@@ -33,7 +30,7 @@ curl -s http://localhost:9901/stats | grep "upstream_rq_total"
     **Cause:** Invalid or expired API key.
     ```bash
     # Verify key is valid
-    curl -v http://localhost:8080/api/v1/query \
+    curl -v https://<edge>.m.xscalerlabs.com/api/v1/query \
       -H "Authorization: Bearer $API_KEY" \
       --data-urlencode 'query=up' 2>&1 | grep "< HTTP"
     # Expected: HTTP/1.1 200
@@ -99,7 +96,7 @@ curl -s http://localhost:9901/stats | grep "upstream_rq_total"
 ??? failure "Metrics not appearing in Grafana"
     ```bash
     # 1. Check xMetrics has received data
-    curl -s "http://localhost:9009/prometheus/api/v1/query" \
+    curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/query" \
       -H "X-Scope-OrgID: $TENANT_ID" \
       --data-urlencode 'query=count({__name__=~".+"})' | jq '.data.result'
 
@@ -134,7 +131,7 @@ curl -s http://localhost:9901/stats | grep "upstream_rq_total"
 ??? failure "xLogs streams not found in Grafana"
     ```bash
     # Check xLogs labels exist
-    curl -s "http://localhost:3100/loki/api/v1/labels" \
+    curl -s "https://<edge>.l.xscalerlabs.com/loki/api/v1/labels" \
       -H "X-Scope-OrgID: $TENANT_ID" | jq .
     ```
 
@@ -145,7 +142,7 @@ curl -s http://localhost:9901/stats | grep "upstream_rq_total"
 ??? failure "xTraces push returns 403"
     Verify API key has access to traces:
     ```bash
-    curl -v http://localhost:8282/v1/traces \
+    curl -v https://<edge>.t.xscalerlabs.com/v1/traces \
       -H "Authorization: Bearer $API_KEY" \
       -H "Content-Type: application/json" \
       -d '{"resourceSpans":[]}' 2>&1 | grep "< HTTP"

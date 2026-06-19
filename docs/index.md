@@ -31,7 +31,7 @@ Welcome to the **xScaler Observability Platform Training Programme**. This two-d
 
 ## Platform at a Glance
 
-xScaler is a **production-grade, multi-tenant SaaS observability platform** built on the Grafana LGTM stack:
+xScaler is a **production-grade, multi-tenant SaaS observability platform** that unifies metrics, logs, and traces in a single tenanted environment:
 
 ```mermaid
 graph LR
@@ -40,7 +40,7 @@ graph LR
         L[📄 Logs]
         T[🔍 Traces]
     end
-    subgraph LGTM Stack
+    subgraph "xScaler Backends"
         MI[xMetrics]
         LO[xLogs]
         TE[xTraces]
@@ -88,24 +88,23 @@ graph LR
 
 ## Training Environment
 
-Your instructor will provide environment credentials. The local development stack exposes:
+Your instructor will provide environment credentials. The platform exposes these endpoints:
 
 | Service | URL | Purpose |
 |---|---|---|
-| Portal UI | `http://localhost:3000` | Web portal |
-| Portal API | `http://localhost:8081` | Control plane API |
-| Agent API (OpAMP) | `ws://localhost:8082/v1/opamp` | Agent management |
-| Metrics ingestion | `http://localhost:8080` | Envoy → xMetrics |
-| Logs ingestion | `http://localhost:8181` | Envoy → xLogs |
-| Traces ingestion | `http://localhost:8282` | Envoy → xTraces |
-| Traces (gRPC) | `grpc://localhost:4317` | Envoy → xTraces |
-| Grafana | `http://localhost:3001` | Dashboards |
+| Portal | `https://portal.xscalerlabs.com` | Web portal and control plane API |
+| Agent API (OpAMP) | `wss://agents.xscalerlabs.com/v1/opamp` | Agent management |
+| Metrics ingestion | `https://<edge>.m.xscalerlabs.com/otlp/v1/metrics` | OTLP metrics → xMetrics |
+| Logs ingestion | `https://<edge>.l.xscalerlabs.com/otlp/v1/logs` | OTLP logs → xLogs |
+| Traces (HTTP) | `https://<edge>.t.xscalerlabs.com/otlp/v1/traces` | OTLP traces → xTraces |
+| Traces (gRPC) | `<edge>.t.xscalerlabs.com:4317` | OTLP gRPC → xTraces |
+| Grafana | `https://<org-slug>.g.xscalerlabs.com` | Dashboards and alerting |
 
 ---
 
 ## How to Use This Site
 
-Navigate using the **sidebar** on the left, the **tabs** at the top, or the **Previous / Next** buttons at the bottom of each page.
+Navigate using the **sidebar** on the left or the **Previous / Next** buttons at the bottom of each page.
 
 Each page follows a consistent structure:
 

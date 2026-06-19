@@ -234,21 +234,20 @@ docker compose logs otel-collector --follow --tail=20
 
 ### Exercise 2.2 — Verify Data Is Flowing
 
-```bash
-# Check that system-mimir has metrics from the collector
-curl -s "http://localhost:9010/prometheus/api/v1/query" \
-  -H "X-Scope-OrgID: system-monitoring" \
-  --data-urlencode 'query=up' | jq '.data.result | length'
-# Should return > 0
+Open Grafana → **Explore**, select the platform metrics datasource, and run:
+
+```promql
+up
 ```
+
+You should see `1` for each edge component that the collector is successfully scraping.
 
 ---
 
 ## Validation
 
 - [ ] You can explain the difference between OTel SDK and OTel Collector
-- [ ] `docker compose logs otel-collector` shows successful scrapes
-- [ ] The `up` metric returns results in Grafana (system-mimir datasource)
+- [ ] The `up` metric returns results in Grafana Explore
 
 ---
 

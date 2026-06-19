@@ -7,7 +7,7 @@ Build a four golden signals service dashboard with PromQL and LogQL panels.
 ## Prerequisites
 
 - [ ] Lab 04 completed (all datasources verified)
-- [ ] Grafana accessible at `http://localhost:3001`
+- [ ] Grafana accessible at `https://<slug>.g.xscalerlabs.com`
 
 ## Steps
 

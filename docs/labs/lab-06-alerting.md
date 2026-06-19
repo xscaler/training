@@ -7,7 +7,7 @@ Create an alert rule, configure a contact point, and observe the full alert life
 ## Prerequisites
 
 - [ ] Lab 05 completed (dashboard exists)
-- [ ] Grafana accessible at `http://localhost:3001`
+- [ ] Grafana accessible at `https://<slug>.g.xscalerlabs.com`
 
 ## Steps
 
@@ -44,7 +44,7 @@ vector(1)
 ```bash
 # Poll alert state every 5 seconds
 for i in {1..12}; do
-  curl -s "http://localhost:3001/api/alertmanager/grafana/api/v2/alerts" \
+  curl -s "https://<slug>.g.xscalerlabs.com/api/alertmanager/grafana/api/v2/alerts" \
     -u "admin:admin" | jq '.[].status.state' 2>/dev/null
   sleep 5
 done

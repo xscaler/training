@@ -13,7 +13,7 @@
 ## Prerequisites
 
 Before configuring datasources, you need:
-- Grafana instance running (local dev: `http://localhost:3001`)
+- Grafana instance running (local dev: `https://<slug>.g.xscalerlabs.com`)
 - xScaler tenant ID (`xs_...`)
 - xScaler API key (`xag_...`)
 - xScaler endpoint URLs (from tenant details)
@@ -187,7 +187,7 @@ Before configuring datasources, you need:
 
 ```bash
 # For local dev environment
-export GRAFANA_URL="http://localhost:3001"
+export GRAFANA_URL="https://<your-org-slug>.g.xscalerlabs.com"
 export GRAFANA_USER="admin"
 export GRAFANA_PASS="admin"
 
@@ -253,7 +253,7 @@ curl -s "$GRAFANA_URL/api/datasources/$DS_ID/health" \
 ??? failure "xTraces datasource: 'No traces found'"
     Check that traces are being ingested:
     ```bash
-    curl -s "http://localhost:3200/api/v2/search" \
+    curl -s "https://<edge>.t.xscalerlabs.com/api/v2/search" \
       -H "X-Scope-OrgID: $TENANT_ID" | jq .traces
     ```
 

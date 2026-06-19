@@ -7,7 +7,7 @@ Configure and verify all three xScaler datasources in Grafana, including cross-s
 ## Prerequisites
 
 - [ ] Lab 01 completed (`PROD_TENANT` and `PROD_API_KEY` exported)
-- [ ] Grafana accessible: `http://localhost:3001`
+- [ ] Grafana accessible: `https://<slug>.g.xscalerlabs.com`
 - [ ] Local stack running
 
 ## Architecture
@@ -31,7 +31,7 @@ graph LR
 
 ### Step 1 — Verify Pre-Provisioned Datasources
 
-1. Open `http://localhost:3001` (admin/admin)
+1. Open `https://<slug>.g.xscalerlabs.com` (admin/admin)
 2. Navigate to **Connections → Data Sources**
 3. Verify four datasources exist: `system-mimir`, `client-mimir`, `client-loki`, `tempo`
 4. Click **Test** on each — all should show green
@@ -40,7 +40,7 @@ graph LR
 
 ```bash
 # Direct query to confirm data exists
-curl -s "http://localhost:9009/prometheus/api/v1/query" \
+curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/query" \
   -H "X-Scope-OrgID: system-monitoring" \
   --data-urlencode 'query=up' | jq '.data.result | length'
 # Expected: > 0

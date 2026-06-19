@@ -5,7 +5,7 @@
 - [ ] Describe the xScaler platform architecture end-to-end
 - [ ] Identify the role of each component in the control plane and data plane
 - [ ] Explain the two-tier deployment model (system cluster + edge clusters)
-- [ ] Read and interpret the service topology from the docker-compose stack
+- [ ] Read and interpret the platform service topology
 
 ---
 
@@ -13,7 +13,7 @@
 
 xScaler is a **production-grade, multi-tenant SaaS observability platform**. It provides a single unified interface for collecting, storing, and visualising metrics, logs, and traces across multiple customer tenants — all in complete isolation from each other.
 
-The platform is built on open-source foundations (**Grafana LGTM stack**) wrapped with proprietary:
+The platform is built on proven open-source observability backends wrapped with proprietary:
 - Authentication and authorisation (`proxy-auth`, `portal-api`)
 - Multi-tenant isolation (`X-Scope-OrgID` header enforcement)
 - Agent management and configuration distribution (`agent-api`, OpAMP)
@@ -23,53 +23,52 @@ The platform is built on open-source foundations (**Grafana LGTM stack**) wrappe
 
 ## Two-Tier Deployment Architecture
 
-```mermaid
-graph TB
-    subgraph CP["Control Plane (System Cluster)"]
-        PA[portal-api :8081]
-        PW[portal-web :3000]
-        AA[agent-api :8082]
-        MS[mimir-sync]
-        SM[system-mimir]
-        PR[provisiond]
-        PG[(PostgreSQL)]
-        AC[ArgoCD]
-    end
+xScaler separates the **control plane** (global, single cluster) from the **edge data plane** (regional, one cluster per region). Telemetry from your services is always written to the closest edge cluster; the control plane handles configuration, billing, and management.
 
-    subgraph EDGE["Edge Cluster — euw1-01 (eu-west-1)"]
-        EN[Envoy Gateway]
-        PXM[proxy-auth / metrics]
-        PXL[proxy-auth / logs]
-        PXT[proxy-auth / traces]
-        MI[xMetrics :9009]
-        LO[xLogs :3100]
-        TE[xTraces :3200]
-        GR[Managed Grafana]
-        OC[OTel Collector]
-    end
+??? info "Detailed Architecture Diagram"
 
-    subgraph S3["AWS S3 (Object Storage)"]
-        S3M[mimir-blocks bucket]
-        S3L[loki-chunks bucket]
-        S3T[tempo-blocks bucket]
-    end
+    ```mermaid
+    graph TB
+        subgraph CP["Control Plane"]
+            PA[portal-api]
+            PW[portal-web]
+            AA[agent-api]
+            PR[provisiond]
+            PG[(PostgreSQL)]
+            AC[ArgoCD]
+        end
 
-    Users -->|HTTPS| PW
-    PW -->|REST| PA
-    PA <-->|Read/Write| PG
-    MS -->|Poll xMetrics| SM
-    MS -->|Write rollups| PG
-    AC -->|GitOps sync| EDGE
+        subgraph EDGE["Edge Cluster — euw1-01 (eu-west-1)"]
+            EN[Envoy Gateway]
+            PXM[proxy-auth / metrics]
+            PXL[proxy-auth / logs]
+            PXT[proxy-auth / traces]
+            MI[xMetrics]
+            LO[xLogs]
+            TE[xTraces]
+            GR[Managed Grafana]
+            OC[OTel Collector]
+        end
 
-    Collectors -->|OTLP/PRW| EN
-    EN -->|ext_authz| PXM & PXL & PXT
-    PXM & PXL & PXT -->|X-Scope-OrgID| MI & LO & TE
-    MI --> S3M
-    LO --> S3L
-    TE --> S3T
-    OC -->|scrape edge metrics| SM
-    PR -->|provision| GR
-```
+        subgraph S3["Object Storage"]
+            S3M[metrics bucket]
+            S3L[logs bucket]
+            S3T[traces bucket]
+        end
+
+        Users -->|HTTPS| PW
+        PW -->|REST| PA
+        PA <-->|Read/Write| PG
+        AC -->|GitOps sync| EDGE
+
+        Collectors -->|OTLP| EN
+        EN -->|ext_authz| PXM & PXL & PXT
+        PXM & PXL & PXT -->|X-Scope-OrgID| MI & LO & TE
+        MI --> S3M
+        LO --> S3L
+        TE --> S3T
+        PR -->|provision| GR
+    ```
 
 ---
 
@@ -215,9 +214,9 @@ docker compose ps
 docker compose logs portal-api --tail=30
 
 # Verify Envoy is listening on all 4 ports
-curl -s http://localhost:8080 2>&1 | head -5   # metrics
-curl -s http://localhost:8181 2>&1 | head -5   # logs
-curl -s http://localhost:8282 2>&1 | head -5   # traces HTTP
+curl -s https://<edge>.m.xscalerlabs.com 2>&1 | head -5   # metrics
+curl -s https://<edge>.l.xscalerlabs.com 2>&1 | head -5   # logs
+curl -s https://<edge>.t.xscalerlabs.com 2>&1 | head -5   # traces HTTP
 ```
 
 ### Exercise 1.2 — Inspect the Architecture
@@ -235,8 +234,8 @@ docker compose images
 ## Validation
 
 - [ ] `docker compose ps` shows all services as `Up` or `healthy`
-- [ ] `curl http://localhost:8081/health` returns `{"status":"ok"}`
-- [ ] You can access the portal UI at `http://localhost:3000`
+- [ ] `curl https://portal.xscalerlabs.com/health` returns `{"status":"ok"}`
+- [ ] You can access the portal UI at `https://portal.xscalerlabs.com`
 - [ ] `docker compose logs agent-api --tail=5` shows "OpAMP server listening"
 
 ---

@@ -391,7 +391,7 @@ processors:
 
 exporters:
   prometheusremotewrite:
-    endpoint: http://localhost:9009/api/v1/push
+    endpoint: https://<edge>.m.xscalerlabs.com/api/v1/push
     headers:
       X-Scope-OrgID: ${env:TENANT_ID}
 

@@ -213,35 +213,38 @@ Routes:
 
 ### Exercise 3.3 — Inspect Envoy Admin Interface
 
+!!! note "Platform Operator Exercise"
+    The Envoy admin interface is accessible only to platform operators via cluster access (kubectl port-forward or equivalent). Ask your instructor if a forwarded port has been set up for this exercise.
+
 ```bash
-# Envoy admin stats
-curl -s http://localhost:9901/stats | grep "ext_authz" | head -20
+# Envoy admin stats (requires cluster access)
+curl -s http://<envoy-admin>/stats | grep "ext_authz" | head -20
 
 # Envoy clusters health
-curl -s http://localhost:9901/clusters | grep "health_flags" | head -10
+curl -s http://<envoy-admin>/clusters | grep "health_flags" | head -10
 
 # Active listener configuration
-curl -s http://localhost:9901/listeners | jq .
+curl -s http://<envoy-admin>/listeners | jq .
 ```
 
 ### Exercise 3.4 — Test Auth Rejection
 
 ```bash
 # Test with invalid API key
-curl -v http://localhost:8080/api/v1/push \
+curl -v https://<edge>.m.xscalerlabs.com/api/v1/push \
   -H "Authorization: Bearer xag_invalidkeyhere" \
   -H "Content-Type: application/x-protobuf" \
   2>&1 | grep "< HTTP"
 # Expected: 401
 
 # Test with no auth header
-curl -v http://localhost:8080/api/v1/push \
+curl -v https://<edge>.m.xscalerlabs.com/api/v1/push \
   -H "Content-Type: application/x-protobuf" \
   2>&1 | grep "< HTTP"
 # Expected: 401
 
 # Test with comma in X-Scope-OrgID
-curl -v http://localhost:8080/api/v1/push \
+curl -v https://<edge>.m.xscalerlabs.com/api/v1/push \
   -H "Authorization: Bearer $API_KEY" \
   -H "X-Scope-OrgID: tenant1,tenant2" \
   2>&1 | grep "< HTTP"
@@ -252,7 +255,7 @@ curl -v http://localhost:8080/api/v1/push \
 
 ## Validation
 
-- [ ] Envoy admin is accessible at `http://localhost:9901`
+- [ ] You can describe the Envoy admin endpoints and what each exposes
 - [ ] Invalid API key returns HTTP 401
 - [ ] Comma in X-Scope-OrgID returns HTTP 400
 - [ ] You can describe the ext_authz flow from memory
