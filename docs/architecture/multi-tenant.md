@@ -7,24 +7,24 @@ xScaler's multi-tenancy is built on a single architectural principle: **every st
 ```mermaid
 graph TB
     subgraph "Single Shared Infrastructure"
-        EN[Envoy Gateway\nShared]
-        PA[proxy-auth\nShared]
-        MI[xMetrics\nShared process]
-        LO[xLogs\nShared process]
-        TE[xTraces\nShared process]
-        S3[S3 Buckets\nShared storage]
+        EN[Envoy Gateway Shared]
+        PA[proxy-auth Shared]
+        MI[xMetrics Shared process]
+        LO[xLogs Shared process]
+        TE[xTraces Shared process]
+        S3[S3 Buckets Shared storage]
     end
 
     subgraph "Tenant A Data"
-        T_A_M[Metrics\nX-Scope-OrgID: xs_acme_abc12345]
-        T_A_L[Logs\nX-Scope-OrgID: xs_acme_abc12345]
-        T_A_T[Traces\nX-Scope-OrgID: xs_acme_abc12345]
+        T_A_M[Metrics X-Scope-OrgID: xs_acme_abc12345]
+        T_A_L[Logs X-Scope-OrgID: xs_acme_abc12345]
+        T_A_T[Traces X-Scope-OrgID: xs_acme_abc12345]
     end
 
     subgraph "Tenant B Data"
-        T_B_M[Metrics\nX-Scope-OrgID: xs_corp_def67890]
-        T_B_L[Logs\nX-Scope-OrgID: xs_corp_def67890]
-        T_B_T[Traces\nX-Scope-OrgID: xs_corp_def67890]
+        T_B_M[Metrics X-Scope-OrgID: xs_corp_def67890]
+        T_B_L[Logs X-Scope-OrgID: xs_corp_def67890]
+        T_B_T[Traces X-Scope-OrgID: xs_corp_def67890]
     end
 
     EN --> PA

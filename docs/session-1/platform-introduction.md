@@ -33,9 +33,9 @@ xScaler separates the **control plane** (global, single cluster) from the **edge
             PA[portal-api]
             PW[portal-web]
             AA[agent-api]
-            PR[provisiond]
+            PR[provisioning service]
             PG[(PostgreSQL)]
-            AC[ArgoCD]
+            AC[the platform deployment system]
         end
 
         subgraph EDGE["Edge Cluster — euw1-01 (eu-west-1)"]
@@ -118,9 +118,9 @@ The OpenTelemetry agent management server. Implements the **OpAMP** (Open Agent 
 | Database | PostgreSQL (NOTIFY/LISTEN on `agent_config_changed`) |
 | Responsibilities | Agent enrollment, config push, delivery tracking |
 
-### mimir-sync
+### usage-sync
 
-A background daemon that polls `system-mimir` every 60 seconds and writes per-tenant usage metrics into PostgreSQL. This feeds the portal dashboard and billing calculations.
+A background daemon that polls `platform-metrics` every 60 seconds and writes per-tenant usage metrics into PostgreSQL. This feeds the portal dashboard and billing calculations.
 
 ### PostgreSQL
 
@@ -162,7 +162,7 @@ Multi-tenant long-term metrics storage. Receives Prometheus remote_write or OTLP
 
 - `multitenancy_enabled: true`
 - Port: `:9009`
-- Object storage: S3 (`xscaler-mimir-{region}` bucket)
+- Object storage: S3 (`metrics-storage-{region}` bucket)
 
 ### xLogs (Tenant Logs)
 
@@ -171,7 +171,7 @@ Multi-tenant log aggregation. Receives xLogs push API requests via Envoy.
 - `auth_enabled: true`
 - HTTP: `:3100`, gRPC: `:9095`
 - Schema: TSDB v13
-- Object storage: S3 (`xscaler-loki-{region}` bucket)
+- Object storage: S3 (`logs-storage-{region}` bucket)
 
 ### xTraces (Tenant Traces)
 
@@ -180,7 +180,7 @@ Multi-tenant distributed trace storage. Receives OTLP gRPC/HTTP via Envoy.
 - `multitenancy_enabled: true`
 - HTTP: `:3200`, gRPC: `:9095`
 - OTLP receivers: `:4317` (gRPC), `:4318` (HTTP)
-- Object storage: S3 (`xscaler-tempo-{region}` bucket)
+- Object storage: S3 (`traces-storage-{region}` bucket)
 
 ---
 

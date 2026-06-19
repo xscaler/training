@@ -6,7 +6,7 @@ Create a production-ready tenant hierarchy with multiple API keys and verify the
 
 ## Prerequisites
 
-- [ ] Local dev stack running (`docker compose ps` all green)
+- [ ] Portal accessible at `https://portal.xscalerlabs.com`
 - [ ] JWT token exported: `export JWT_TOKEN=...`
 - [ ] Base URL exported: `export PORTAL_BASE="https://portal.xscalerlabs.com"`
 

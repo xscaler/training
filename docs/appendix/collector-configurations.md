@@ -149,7 +149,7 @@ service:
 ## A.3 OpAMP Supervisor Config
 
 ```yaml
-# supervisor.yaml (from deploy/agents/agent-1.supervisor.yaml)
+# supervisor.yaml (from )
 server:
   endpoint: wss://agents.xscalerlabs.com/v1/opamp
   # Local dev:
@@ -177,7 +177,7 @@ storage:
 
 ## A.4 Platform OTel Collector (Edge)
 
-Based on `deploy/otel/otel-collector.yaml` (local dev):
+Based on `` (local dev):
 
 ```yaml
 receivers:
@@ -187,7 +187,7 @@ receivers:
         - job_name: mimir
           scrape_interval: 15s
           static_configs:
-            - targets: ['client-mimir:9009']
+            - targets: ['xMetrics:9009']
               labels: {xscaler_cluster: local}
         - job_name: envoy
           scrape_interval: 15s
@@ -202,7 +202,7 @@ receivers:
         - job_name: loki
           scrape_interval: 15s
           static_configs:
-            - targets: ['client-loki:3100']
+            - targets: ['xLogs:3100']
               labels: {xscaler_cluster: local}
         - job_name: tempo
           scrape_interval: 15s
@@ -221,9 +221,9 @@ processors:
 
 exporters:
   prometheusremotewrite:
-    endpoint: http://system-mimir:9009/api/v1/push
+    endpoint: http://platform-metrics:9009/api/v1/push
     headers:
-      X-Scope-OrgID: system-monitoring
+      X-Scope-OrgID: <your-tenant-id>
 
 service:
   pipelines:

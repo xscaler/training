@@ -14,31 +14,19 @@
 A **trace** represents the complete journey of a single request through your distributed system. Each unit of work within a trace is a **span**.
 
 ```mermaid
-gantt
-    title Trace: POST /api/checkout (trace_id=abc123)
-    dateFormat  x
-    axisFormat  +%Lms
+graph LR
+    A["api-gateway Route Request (0–5ms)"]
+    B["checkout-api HTTP Handler (5–15ms)"]
+    C["checkout-api Validate Cart (15–25ms)"]
+    D["checkout-api Lock Inventory (25–95ms)"]
+    E["inventory-svc CheckStock (28–90ms)"]
+    F["payment-api ChargeCard (95–225ms)"]
+    G["card-processor ProcessPayment (100–220ms)"]
+    H["checkout-api SendConfirmation (225–240ms)"]
 
-    section api-gateway
-    Route Request      :0, 5
-
-    section checkout-api
-    HTTP Handler       :5, 15
-    Validate Cart      :15, 25
-    Lock Inventory     :25, 95
-
-    section inventory-svc
-    CheckStock         :28, 90
-
-    section payment-api
-    ChargeCard         :95, 225
-
-    section card-processor
-    ProcessPayment     :100, 220
-
-    section checkout-api
-    SendConfirmation   :225, 240
-    HTTP Response      :240, 245
+    A --> B --> C --> D --> E
+    D --> F --> G
+    F --> H
 ```
 
 **Span attributes** (key metadata on each span):
@@ -144,7 +132,7 @@ These span metrics are available if you enable the **spanmetrics connector** in 
 
 ### Exercise 6.3 — Explore a Distributed Trace
 
-1. Open Grafana → **Explore** → Select `tempo` datasource
+1. Open Grafana → **Explore** → Select `xTraces` datasource
 2. Click **Search** tab → Run Query (no filters)
 
 <div class="screenshot-placeholder">

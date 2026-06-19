@@ -2,108 +2,123 @@
 
 ## Objective
 
-Verify the local dev OpAMP agent is running and enrolled, then explore the database state.
+Deploy an OTel Collector agent, enrol it with xScaler via OpAMP, and verify it appears in the portal with a delivered configuration.
 
 ## Prerequisites
 
-- [ ] Lab 01 completed
-- [ ] Local stack running: `docker compose ps agent-1` shows `Up`
+- [ ] Lab 01 completed (`PROD_TENANT` and `PROD_API_KEY` exported)
+- [ ] OTel Collector (`otelcol-contrib`) installed on your lab machine
+- [ ] `PORTAL_BASE` and `JWT_TOKEN` exported
 
-## Architecture
+## Enrollment Flow
 
 ```mermaid
 sequenceDiagram
-    participant SUP as agent-1 (Supervisor)
-    participant AA as agent-api :8082
-    participant PG as PostgreSQL
+    participant SUP as OTel Supervisor
+    participant AA as agents.xscalerlabs.com
+    participant PA as Portal (portal-api)
 
-    SUP->>AA: WebSocket xse_localdev000...
-    AA->>PG: INSERT INTO agents
-    AA->>PG: INSERT INTO agent_keys (xag_...)
+    SUP->>AA: WebSocket /v1/opamp (Bearer xse_...)
     AA->>SUP: ConnectionSettings {xag_...}
     SUP->>AA: Reconnect with xag_...
-    AA->>PG: SELECT assignments
-    AA->>SUP: RemoteConfig YAML
+    AA->>SUP: RemoteConfig (YAML from template)
     SUP->>AA: EffectiveConfig
-    AA->>PG: agent_config_deliveries status=applied
+    AA->>PA: config delivery status = applied
 ```
+
+---
 
 ## Steps
 
-### Step 1 — Verify Agent Status
+### Step 1 — Create an Enrollment Token
+
+In the portal, navigate to **Agents → Enrollment Tokens → New Token**.
+
+Or via API:
 
 ```bash
-# Check if agent-1 is running
-docker compose ps agent-1
-
-# Watch agent logs
-docker compose logs agent-1 --tail=30
+ENROLL=$(curl -s -X POST "$PORTAL_BASE/api/portal/orgs/enrollment-tokens" \
+  -H "Authorization: Bearer $JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"display_name": "lab-enrollment"}')
+export ENROLLMENT_TOKEN=$(echo $ENROLL | jq -r '.token')
+echo "Enrollment token: $ENROLLMENT_TOKEN"
 ```
 
-### Step 2 — Inspect Database State
+The token starts with `xse_` and is single-use by default.
+
+### Step 2 — Configure the OTel Supervisor
+
+Create `supervisor.yaml`:
+
+```yaml
+server:
+  endpoint: wss://agents.xscalerlabs.com/v1/opamp
+  headers:
+    Authorization: "Bearer ${ENROLLMENT_TOKEN}"
+
+capabilities:
+  accepts_remote_config: true
+  reports_effective_config: true
+  reports_own_metrics: true
+
+agent:
+  executable: /usr/local/bin/otelcol-contrib
+  config_apply_timeout: 30s
+```
+
+### Step 3 — Start the Agent
 
 ```bash
-# Check registered agents
-docker compose exec postgres psql -U xscaler -d xscaler -c "
-  SELECT id, labels, last_seen_at FROM agents ORDER BY created_at DESC LIMIT 5;
-"
-
-# Check enrollment tokens
-docker compose exec postgres psql -U xscaler -d xscaler -c "
-  SELECT display_name, use_count, created_at FROM agent_enrollment_tokens;
-"
-
-# Check agent keys
-docker compose exec postgres psql -U xscaler -d xscaler -c "
-  SELECT agent_id, created_at FROM agent_keys;
-"
-
-# Check config deliveries
-docker compose exec postgres psql -U xscaler -d xscaler -c "
-  SELECT d.status, d.offered_at, d.applied_at
-  FROM agent_config_deliveries d
-  ORDER BY d.offered_at DESC LIMIT 5;
-"
+otelcol-contrib --config supervisor.yaml
 ```
 
-### Step 3 — Inspect the Supervisor Config
+Watch the startup output — you should see:
+
+```
+[INFO] Connected to OpAMP server
+[INFO] Received remote config (revision 1)
+[INFO] Config applied successfully
+```
+
+### Step 4 — Verify in the Portal
+
+Navigate to **Agents → Fleet** in the portal. Your agent should appear with:
+
+- **Status:** Online
+- **Config status:** Applied
+- **Last seen:** within the last minute
+
+<div class="screenshot-placeholder">
+[Screenshot: Portal Agents Fleet view showing one agent online with status Applied]
+</div>
+
+### Step 5 — Check via API
 
 ```bash
-# View the local agent-1 supervisor config
-cat /path/to/xscaler/deploy/agents/agent-1.supervisor.yaml
+# List all agents in the org
+curl -s "$PORTAL_BASE/api/portal/orgs/agents" \
+  -H "Authorization: Bearer $JWT_TOKEN" | jq '.[].status'
 ```
 
-Key fields:
-- `endpoint: ws://agent-api:8082/v1/opamp`
-- `Authorization: Bearer xse_localdev0000000000000000000000`
-- `accepts_remote_config: true`
+Expected: `"online"` for your enrolled agent.
 
-### Step 4 — Trigger a Config Reload
-
-```bash
-# Manually notify agent-api of a config change
-docker compose exec postgres psql -U xscaler -d xscaler -c "
-  SELECT pg_notify('agent_config_changed', '{}');
-"
-
-# Watch agent-api log
-docker compose logs agent-api --tail=10
-```
+---
 
 ## Validation
 
-- [ ] `docker compose ps agent-1` shows `Up`
-- [ ] Agent appears in `agents` table
-- [ ] `agent_config_deliveries.status` = `applied`
-- [ ] pg_notify causes agent-api to log a config push
+- [ ] Enrollment token created (starts with `xse_`)
+- [ ] Supervisor connects and logs "Config applied"
+- [ ] Agent appears in portal with status **Online**
+- [ ] Config delivery shows **Applied**
 
-## Expected Database Output
+---
 
-```
-           id           |         labels          |          last_seen_at
-------------------------+-------------------------+--------------------------------
- 01J1234567890ABCDEF... | {"host.name": "agent-1"} | 2026-06-18 10:00:30.456+00
-```
+## Key Takeaways
+
+- The enrollment token (`xse_`) is used once — the agent receives a permanent per-agent key (`xag_`) after first connection
+- `accepts_remote_config: true` is required for OpAMP config push to work
+- Config delivery status transitions: `offered` → `applied` (or `failed` on error)
 
 ---
 

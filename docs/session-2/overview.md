@@ -57,9 +57,9 @@ By the end of Session 2, you will be able to:
 ## Instructor Notes
 
 !!! tip "Trainer Guidance"
-    - Show the actual OTel collector config from `deploy/otel/otel-collector.yaml` in the repository
+    - Show the actual OTel collector config from `` in the repository
     - Run `docker compose logs otel-collector` to show live scraping activity
-    - Use the Grafana Explore view to show data flowing from OTel Collector into system-mimir
+    - Use the Grafana Explore view to show data flowing from OTel Collector into platform-metrics
 
 ---
 

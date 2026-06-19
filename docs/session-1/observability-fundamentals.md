@@ -16,9 +16,9 @@ Modern systems are too complex to debug by inspection alone. **Observability** i
 ```mermaid
 graph LR
     subgraph Signals
-        M["📊 Metrics\nWhat is happening?"]
-        L["📄 Logs\nWhy is it happening?"]
-        T["🔍 Traces\nWhere is it happening?"]
+        M["📊 Metrics What is happening?"]
+        L["📄 Logs Why is it happening?"]
+        T["🔍 Traces Where is it happening?"]
     end
     subgraph Storage
         MI[xMetrics]
@@ -112,21 +112,15 @@ rate({service="payment-api"} |= "error" [5m])
 **Definition:** End-to-end records of a request's journey through distributed services.
 
 ```mermaid
-gantt
-    title Distributed Trace: POST /checkout
-    dateFormat  X
-    axisFormat  %Lms
+graph LR
+    A["api-gateway HTTP handler (0–5ms)"]
+    B["payment-api ValidateCart (5–15ms)"]
+    C["payment-api ChargeCard (15–145ms)"]
+    D["card-processor AuthorizePayment (20–140ms)"]
+    E["payment-api UpdateInventory (145–165ms)"]
 
-    section api-gateway
-    HTTP handler           : 0, 5
-
-    section payment-api
-    ValidateCart           : 5, 15
-    ChargeCard             : 15, 145
-    UpdateInventory        : 145, 165
-
-    section card-processor
-    AuthorizePayment       : 20, 140
+    A --> B --> C --> D
+    C --> E
 ```
 
 **xScaler traces storage:** xTraces (`multitenancy_enabled: true`, HTTP `:3200`, gRPC `:9095`)
@@ -164,13 +158,13 @@ xScaler combines four components to form a complete observability backend:
 ```mermaid
 graph TB
     subgraph "xScaler Data Plane"
-        MI[xMetrics\nMetrics Storage]
-        LO[xLogs\nLog Storage]
-        TE[xTraces\nTrace Storage]
+        MI[xMetrics Metrics Storage]
+        LO[xLogs Log Storage]
+        TE[xTraces Trace Storage]
     end
 
     subgraph "Visualisation"
-        GR[Grafana\nDashboards + Alerts]
+        GR[Grafana Dashboards + Alerts]
     end
 
     subgraph "Data Sources in Grafana"
@@ -216,19 +210,19 @@ Google SRE popularised the concept of four signals that, together, describe the 
 2. Navigate to **Connections → Data Sources**
 
 <div class="screenshot-placeholder">
-[Screenshot: Grafana data sources page showing system-mimir, client-mimir, client-loki, and tempo datasources]
+[Screenshot: Grafana data sources page showing platform-metrics, xMetrics, xLogs, and tempo datasources]
 </div>
 
 You should see four pre-provisioned datasources:
-- `system-mimir` — platform internal metrics (`X-Scope-OrgID: system-monitoring`)
-- `client-mimir` — tenant metrics (`X-Scope-OrgID: ${LOADGEN_GRAFANA_TENANT}`)
-- `client-loki` — tenant logs
+- `platform-metrics` — platform internal metrics (`X-Scope-OrgID: <your-tenant-id>`)
+- `xMetrics` — tenant metrics (`X-Scope-OrgID: <your-tenant-id>`)
+- `xLogs` — tenant logs
 - `tempo` — tenant traces
 
 ### Exercise 1.6 — Run Your First PromQL Query
 
 1. Open Grafana → **Explore**
-2. Select the `client-mimir` datasource
+2. Select the `xMetrics` datasource
 3. Enter this query:
 
 ```promql
@@ -244,7 +238,7 @@ This returns `1` for every scrape target that is reachable.
 ### Exercise 1.7 — Run Your First LogQL Query
 
 1. In Grafana → **Explore**
-2. Select the `client-loki` datasource
+2. Select the `xLogs` datasource
 3. Enter:
 
 ```logql
@@ -261,7 +255,7 @@ This returns `1` for every scrape target that is reachable.
 
 - [ ] Grafana is accessible at `https://<slug>.g.xscalerlabs.com`
 - [ ] All four datasources show green status (✓) in Connections → Data Sources
-- [ ] `up` query in Explore returns results from `client-mimir`
+- [ ] `up` query in Explore returns results from `xMetrics`
 - [ ] A LogQL query returns log lines in the xLogs Explore view
 
 ---
@@ -277,12 +271,12 @@ This returns `1` for every scrape target that is reachable.
 
 ??? failure "PromQL query returns 'No data'"
     Wait 30 seconds — scrape interval is 15s and there may not be enough data points yet.
-    Also verify the correct datasource is selected (`client-mimir` not `system-mimir`).
+    Also verify the correct datasource is selected (`xMetrics` not `platform-metrics`).
 
 ??? failure "xLogs datasource connection error"
     ```bash
     curl -s https://<edge>.l.xscalerlabs.com/ready
-    docker compose logs client-loki --tail=20
+    docker compose logs xLogs --tail=20
     ```
 
 ---

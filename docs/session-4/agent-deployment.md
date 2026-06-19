@@ -26,14 +26,14 @@ An enrollment token is an `xse_` prefixed key that allows a new agent to registe
 
 ```mermaid
 graph LR
-    TK[Enrollment Token\nxse_...]
+    TK[Enrollment Token xse_...]
     AG1[Agent 1]
     AG2[Agent 2]
     AG3[Agent 3]
     TK --> AG1 & AG2 & AG3
-    AG1 --> AK1[Agent Key\nxag_agent1]
-    AG2 --> AK2[Agent Key\nxag_agent2]
-    AG3 --> AK3[Agent Key\nxag_agent3]
+    AG1 --> AK1[Agent Key xag_agent1]
+    AG2 --> AK2[Agent Key xag_agent2]
+    AG3 --> AK3[Agent Key xag_agent3]
 ```
 
 ### Create an Enrollment Token (Portal API)
@@ -72,7 +72,7 @@ Expected response:
 
 For local dev, the seed data pre-creates a token:
 ```
-xse_localdev0000000000000000000000
+xse_<enrollment-token>
 ```
 
 ---
@@ -271,7 +271,7 @@ Expected log output:
 
 ```bash
 # 1. View supervisor config
-cat /path/to/xscaler/deploy/agents/agent-1.supervisor.yaml
+cat /path/to/xscaler/
 
 # 2. Check agent registration
 docker compose exec postgres psql -U xscaler -d xscaler \
@@ -290,7 +290,7 @@ docker compose exec postgres psql -U xscaler -d xscaler \
 
 ## Validation
 
-- [ ] `docker compose ps agent-1` shows `Up`
+- [ ] `training environment running
 - [ ] `docker compose logs agent-1` shows "Connected to OpAMP server"
 - [ ] Agent appears in the `agents` table in PostgreSQL
 - [ ] `agent_keys` table has an entry for the agent

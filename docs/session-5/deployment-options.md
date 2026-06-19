@@ -3,7 +3,7 @@
 ## Learning Objectives
 
 - [ ] Compare self-managed Grafana vs xScaler Managed Grafana
-- [ ] Explain the `provisiond` managed Grafana provisioner
+- [ ] Explain the `provisioning service` managed Grafana provisioner
 - [ ] Describe the managed Grafana billing model
 - [ ] Choose the appropriate deployment option for a use case
 
@@ -39,14 +39,14 @@ xScaler provisions and manages a Grafana instance per tenant, deployed in the ed
 graph TB
     subgraph "xScaler Control Plane"
         PA[portal-api]
-        PR[provisiond\nK3s edge cluster]
-        PG[(PostgreSQL\ndesired state)]
+        PR[provisioning service K3s edge cluster]
+        PG[(PostgreSQL desired state)]
     end
 
     subgraph "Edge Cluster (euw1-01)"
-        GR_NS[Grafana Namespace\nper-tenant]
-        GR[Grafana Pod\ntenant-specific]
-        DS[Datasources\nprovisioned]
+        GR_NS[Grafana Namespace per-tenant]
+        GR[Grafana Pod tenant-specific]
+        DS[Datasources provisioned]
     end
 
     PA -->|write desired state| PG
@@ -55,9 +55,9 @@ graph TB
     GR_NS --> GR --> DS
 ```
 
-### provisiond
+### provisioning service
 
-`provisiond` is the managed Grafana provisioner. It runs in the edge cluster and:
+`provisioning service` is the managed Grafana provisioner. It runs in the edge cluster and:
 1. Polls `portal-api` for the desired Grafana state per tenant
 2. Installs/upgrades Grafana using Helm
 3. Provisions datasources, API keys, and SMTP settings
@@ -114,7 +114,7 @@ This prevents double-billing when the CronJob runs within the same UTC hour.
 !!! success "Session 5.2 Summary"
     - **Self-managed**: bring your own Grafana, configure datasources manually
     - **Managed Grafana**: xScaler provisions per-tenant Grafana in the edge cluster
-    - `provisiond` polls portal-api for desired state and applies Helm changes
+    - `provisioning service` polls portal-api for desired state and applies Helm changes
     - Managed billing: **$0.04/pod-hour**, minimum 2 replicas, reported every 15 minutes
     - The `grafana-usage-reporter` CronJob deduplicates by using `YYYYMMDDHH` identifiers
 

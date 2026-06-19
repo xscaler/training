@@ -18,7 +18,7 @@ Build a four golden signals service dashboard with PromQL and LogQL panels.
 
 ### Step 2 — Add Request Rate Panel
 
-- Datasource: `client-mimir`
+- Datasource: `xMetrics`
 - Query:
 ```promql
 sum by (job) (rate(up[$__rate_interval]))
@@ -53,7 +53,7 @@ histogram_quantile(0.99, sum by (le) (
 
 ### Step 5 — Add Log Volume Panel
 
-- Datasource: `client-loki`
+- Datasource: `xLogs`
 - Query:
 ```logql
 sum by (level) (count_over_time({service=~".+"}[$__interval]))

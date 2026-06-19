@@ -7,17 +7,17 @@ In Gateway Mode, one or more centralised OTel Collector instances receive from a
 ```mermaid
 graph TB
     subgraph "Application Tier (any namespace)"
-        A1[Service A\nOTLP → :4317]
-        A2[Service B\nOTLP → :4317]
-        A3[Service C\nOTLPHTTP → :4318]
-        A4[Service D\nPrometheus /metrics]
+        A1[Service A OTLP → :4317]
+        A2[Service B OTLP → :4317]
+        A3[Service C OTLPHTTP → :4318]
+        A4[Service D Prometheus /metrics]
     end
 
     subgraph "Monitoring Namespace"
-        SVC[otel-gateway Service\nClusterIP :4317/:4318]
+        SVC[otel-gateway Service ClusterIP :4317/:4318]
         GW1[otel-gateway Pod 1]
         GW2[otel-gateway Pod 2]
-        CM[ConfigMap:\notel-gateway-config]
+        CM[ConfigMap: otel-gateway-config]
     end
 
     subgraph "xScaler Edge"
@@ -39,7 +39,7 @@ graph TB
 
 ## Gateway Config (Production Helm Template)
 
-Based on `charts/edge-xscaler/templates/otel-collector-configmap.yaml`:
+Based on ``:
 
 ```yaml
 receivers:
@@ -82,7 +82,7 @@ exporters:
   prometheusremotewrite:
     endpoint: "{{ .Values.otelCollector.remoteWrite.endpoint }}"
     headers:
-      X-Scope-OrgID: system-monitoring
+      X-Scope-OrgID: <your-tenant-id>
 
 service:
   pipelines:

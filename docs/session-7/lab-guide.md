@@ -266,7 +266,7 @@ curl -s -X POST "https://<slug>.g.xscalerlabs.com/api/dashboards/db" \
 
 ### Step 3.3 — Find Your Trace in xTraces
 
-1. Open Grafana → **Explore** → Select `tempo` datasource
+1. Open Grafana → **Explore** → Select `xTraces` datasource
 2. Enter your trace ID:
 ```
 $TRACE_ID
@@ -399,7 +399,7 @@ curl -s "https://<edge>.t.xscalerlabs.com/api/traces/$TRACE_ID" \
     ```
 
 ??? failure "Dashboard panels show 'No data'"
-    Verify the tenant ID is correct in the datasource header. The local dev datasources use `${LOADGEN_GRAFANA_TENANT}` not your lab tenant.
+    Verify the tenant ID is correct in the datasource header. The local dev datasources use `<your-tenant-id>` not your lab tenant.
     For local dev, query directly without Envoy routing:
     ```bash
     curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/query" \

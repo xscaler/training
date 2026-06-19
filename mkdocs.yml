@@ -76,11 +76,10 @@ plugins:
       minify_html: true
 
 extra:
+  generator: false
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/xscalerlabs
-  version:
-    provider: mike
 
 extra_css:
   - assets/extra.css

@@ -41,7 +41,7 @@ sequenceDiagram
     AA->>PG: INSERT INTO agents\n{id=uuid, org_id, labels=default_labels}
     AA->>PG: INSERT INTO agent_keys\n{agent_id, key_hash=sha256(xag_new)}
 
-    AA->>SUP: ServerToAgent {\n  ConnectionSettings {\n    key: "xag_new_per_agent_key"\n  }\n}
+    AA->>SUP: ServerToAgent {\n  ConnectionSettings {     key: "xag_new_per_agent_key"   }\n}
 
     Note over SUP: Stores xag_ key in storage directory, reconnects
     SUP->>AA: WebSocket CONNECT /v1/opamp\nAuthorization: Bearer xag_...

@@ -145,7 +145,7 @@ sequenceDiagram
 
 ```mermaid
 graph TD
-    ORG[Organisation\nxs_org_abc123]
+    ORG[Organisation xs_org_abc123]
     T1[Tenant: Payment Prod]
     T2[Tenant: Payment Staging]
     M1[Member: Alice - owner]

@@ -16,21 +16,21 @@ Envoy is the **front door** for all telemetry data in xScaler. It runs four TCP 
 ```mermaid
 graph TB
     subgraph Clients
-        C1[OTel Collector\nmetrics]
-        C2[OTel Collector\nlogs]
-        C3[OTel Collector\ntraces HTTP]
-        C4[OTel Collector\ntraces gRPC]
+        C1[OTel Collector metrics]
+        C2[OTel Collector logs]
+        C3[OTel Collector traces HTTP]
+        C4[OTel Collector traces gRPC]
     end
 
     subgraph "Envoy Gateway"
-        L1[Listener :8080\nmetrics]
-        L2[Listener :8181\nlogs]
-        L3[Listener :8282\ntraces HTTP]
-        L4[Listener :4317\ntraces gRPC]
-        LUA[Lua filter\nX-Scope-OrgID guard]
-        EXT1[ext_authz\n→ proxy-auth]
-        EXT2[ext_authz\n→ proxy-auth-logs]
-        EXT3[ext_authz\n→ proxy-auth-traces]
+        L1[Listener :8080 metrics]
+        L2[Listener :8181 logs]
+        L3[Listener :8282 traces HTTP]
+        L4[Listener :4317 traces gRPC]
+        LUA[Lua filter X-Scope-OrgID guard]
+        EXT1[ext_authz → proxy-auth]
+        EXT2[ext_authz → proxy-auth-logs]
+        EXT3[ext_authz → proxy-auth-traces]
     end
 
     subgraph Backends
@@ -141,13 +141,13 @@ flowchart TD
     A[Extract Authorization header] --> B{Bearer token present?}
     B -->|No| ERR1[401 Unauthorized]
     B -->|Yes| C[SHA-256 hash of token]
-    C --> D[PostgreSQL lookup\nSELECT tenant_id WHERE key_hash=... AND revoked_at IS NULL]
+    C --> D[PostgreSQL lookup SELECT tenant_id WHERE key_hash=... AND revoked_at IS NULL]
     D --> E{Key found?}
     E -->|No| ERR2[401 Unauthorized]
-    E -->|Yes| F[Rate limit check\nper-org limits]
+    E -->|Yes| F[Rate limit check per-org limits]
     F --> G{Within limits?}
     G -->|No| ERR3[429 Too Many Requests]
-    G -->|Yes| H[Build OkHttpResponse\nX-Scope-OrgID: tenant_id]
+    G -->|Yes| H[Build OkHttpResponse X-Scope-OrgID: tenant_id]
     H --> I[Return OK to Envoy]
 ```
 
@@ -172,7 +172,7 @@ xscalor_ext_authz_latency_seconds_bucket{le="0.001"} 14800
 xscalor_proxy_auth_key_lookup_duration_seconds_bucket{le="0.005"} 15234
 ```
 
-These are scraped by the edge OTel Collector and sent to `system-mimir` for platform observability.
+These are scraped by the edge OTel Collector and sent to `platform-metrics` for platform observability.
 
 ---
 

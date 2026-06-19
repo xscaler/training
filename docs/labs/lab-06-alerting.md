@@ -24,7 +24,7 @@ Create an alert rule, configure a contact point, and observe the full alert life
 
 1. Navigate to **Alerting → Alert rules → + New alert rule**
 2. Name: `Lab06: High Error Rate`
-3. Datasource: `client-mimir`
+3. Datasource: `xMetrics`
 4. Query A:
 ```promql
 vector(1)

@@ -7,26 +7,26 @@ xScaler is a multi-tenant SaaS observability platform with a strict two-tier arc
 ```mermaid
 graph TB
     subgraph CP["Control Plane — System Cluster"]
-        PA["portal-api :8081\nGo REST API"]
-        PW["portal-web :3000\nNext.js SPA"]
-        AA["agent-api :8082\nOpAMP Server"]
-        MS["mimir-sync\nUsage Aggregator"]
-        SM["system-mimir\nPlatform Metrics"]
-        PR["provisiond\nGrafana Provisioner"]
-        PG[("PostgreSQL\nControl State")]
-        AC["ArgoCD\nGitOps Controller"]
+        PA["portal-api :8081 Go REST API"]
+        PW["portal-web :3000 Next.js SPA"]
+        AA["agent-api :8082 OpAMP Server"]
+        MS["usage-sync Usage Aggregator"]
+        SM["platform-metrics Platform Metrics"]
+        PR["provisioning service Grafana Provisioner"]
+        PG[("PostgreSQL Control State")]
+        AC["the platform deployment system GitOps Controller"]
     end
 
     subgraph EDGE["Edge Cluster — euw1-01 (eu-west-1)"]
-        EN["Envoy Gateway\n:8080/:8181/:8282/:4317"]
-        PXM["proxy-auth/metrics\ngRPC ext_authz"]
-        PXL["proxy-auth/logs\ngRPC ext_authz"]
-        PXT["proxy-auth/traces\ngRPC ext_authz"]
-        MI["xMetrics :9009\nMetrics Storage"]
-        LO["xLogs :3100\nLog Storage"]
-        TE["xTraces :3200\nTrace Storage"]
-        GR["Managed Grafana\nPer-Tenant"]
-        OC["OTel Collector\nEdge Monitoring"]
+        EN["Envoy Gateway :8080/:8181/:8282/:4317"]
+        PXM["proxy-auth/metrics gRPC ext_authz"]
+        PXL["proxy-auth/logs gRPC ext_authz"]
+        PXT["proxy-auth/traces gRPC ext_authz"]
+        MI["xMetrics :9009 Metrics Storage"]
+        LO["xLogs :3100 Log Storage"]
+        TE["xTraces :3200 Trace Storage"]
+        GR["Managed Grafana Per-Tenant"]
+        OC["OTel Collector Edge Monitoring"]
     end
 
     subgraph S3["AWS S3"]
@@ -35,14 +35,14 @@ graph TB
         S3T[tempo-blocks]
     end
 
-    USERS["Users\n(browser)"] -->|HTTPS| PW
+    USERS["Users (browser)"] -->|HTTPS| PW
     PW -->|REST| PA
     PA <-->|SQL| PG
     MS -->|scrape usage| SM
     MS -->|write rollups| PG
     AC -->|Helm sync| EDGE
 
-    COLLECTORS["OTel Collectors\n(customer infra)"] -->|OTLP/PRW| EN
+    COLLECTORS["OTel Collectors (customer infra)"] -->|OTLP/PRW| EN
     EN -->|ext_authz| PXM & PXL & PXT
     PXM -->|X-Scope-OrgID| MI
     PXL -->|X-Scope-OrgID| LO
@@ -65,11 +65,11 @@ graph TB
 | `portal-api` | Go | `:8081` | REST API: tenant CRUD, auth, billing, usage |
 | `portal-web` | Next.js/TypeScript | `:3000` | SPA web portal |
 | `agent-api` | Go | `:8082` | OpAMP server for OTel agent management |
-| `mimir-sync` | Go | — | Polls xMetrics, writes PostgreSQL usage rollups |
-| `system-mimir` | xMetrics | `:9010` | Platform self-monitoring metrics |
-| `provisiond` | Go | — | Managed Grafana provisioner (Helm operator) |
+| `usage-sync` | Go | — | Polls xMetrics, writes PostgreSQL usage rollups |
+| `platform-metrics` | xMetrics | `:9010` | Platform self-monitoring metrics |
+| `provisioning service` | Go | — | Managed Grafana provisioner (Helm operator) |
 | `postgres` | PostgreSQL | `:5432` | Single source of truth for all control state |
-| `ArgoCD` | — | — | GitOps controller (syncs from `/gitops/`) |
+| `the platform deployment system` | — | — | GitOps controller (syncs from `/gitops/`) |
 
 ### Data Plane (Edge)
 
@@ -77,8 +77,8 @@ graph TB
 |---|---|---|---|
 | `envoy` | C++/Envoy Proxy | `:8080/:8181/:8282/:4317` | Edge gateway + ext_authz |
 | `proxy-auth` | Go | `:9001` (gRPC), `:9002` (metrics) | API key validation, rate limiting |
-| `client-mimir` | xMetrics | `:9009` | Tenant metrics storage |
-| `client-loki` | xLogs | `:3100/:9095` | Tenant log storage |
+| `xMetrics` | xMetrics | `:9009` | Tenant metrics storage |
+| `xLogs` | xLogs | `:3100/:9095` | Tenant log storage |
 | `tempo` | xTraces | `:3200/:9095` | Tenant trace storage |
 | `otel-collector` | OTel Contrib | `:4317/:4318` | Edge platform monitoring |
 
@@ -107,7 +107,7 @@ subscriptions            -- per-org Stripe subscription mapping
 organization_billing     -- billing state (last_posted_logs_bytes_billable)
 
 -- Usage
-tenant_usage             -- real-time usage snapshot (mimir-sync writes)
+tenant_usage             -- real-time usage snapshot (usage-sync writes)
 dashboard_tenant_hourly  -- hourly rollups for UI graphs
 ```
 

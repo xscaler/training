@@ -34,10 +34,8 @@ curl -s http://<envoy-admin>/stats | grep "upstream_rq_total"
       -H "Authorization: Bearer $API_KEY" \
       --data-urlencode 'query=up' 2>&1 | grep "< HTTP"
     # Expected: HTTP/1.1 200
-
-    # Check proxy-auth logs
-    docker compose logs proxy-auth --tail=20
     ```
+    If still 401, rotate the API key in the portal under **Tenants → [tenant] → API Keys → Rotate**.
 
 ??? failure "400 Bad Request — X-Scope-OrgID comma rejected"
     **Cause:** Multiple tenant IDs in header (comma-separated).  
@@ -55,39 +53,25 @@ curl -s http://<envoy-admin>/stats | grep "upstream_rq_total"
 
 ## Agent Management Issues
 
-??? failure "Agent not appearing in database"
-    ```bash
-    # Check agent supervisor logs
-    docker compose logs agent-1 --tail=30
-
-    # Check agent-api for connection errors
-    docker compose logs agent-api --tail=30
-
-    # Verify enrollment token exists
-    docker compose exec postgres psql -U xscaler -d xscaler \
-      -c "SELECT display_name, use_count FROM agent_enrollment_tokens;"
-    ```
+??? failure "Agent not appearing in portal fleet"
+    1. Verify the OTel Supervisor started with no errors — check its stdout for `Connected to OpAMP server`.
+    2. Confirm the enrollment token is valid: in the portal go to **Agents → Enrollment Tokens** and check it is not expired or revoked.
+    3. Verify network access: `curl -v wss://agents.xscalerlabs.com/health` should return HTTP 200 before the WebSocket upgrade.
+    4. If the token was single-use, it may have been consumed by an earlier attempt — create a new token.
 
 ??? failure "Config delivery stuck in 'offered'"
-    ```bash
-    # Check agent-api logs for push errors
-    docker compose logs agent-api | grep "error\|Error" | tail -20
-
-    # Check agent supervisor received the config
-    docker compose logs agent-1 | grep "config" | tail -10
-
-    # Manually check delivery status
-    docker compose exec postgres psql -U xscaler -d xscaler \
-      -c "SELECT status, error FROM agent_config_deliveries ORDER BY offered_at DESC LIMIT 5;"
-    ```
+    1. In the portal, open **Agents → Fleet → [agent] → Config History**. Check the status column for any error message.
+    2. Verify the config template YAML is valid — paste it into the portal template editor; it validates on save.
+    3. Check that any `${secret:NAME}` references in the template have a matching secret configured in **Config → Secrets**.
+    4. If the agent is offline, config delivery resumes automatically when it reconnects.
 
 ??? failure "Config delivery shows 'failed'"
-    Check the `error` column for the failure reason:
-    ```bash
-    docker compose exec postgres psql -U xscaler -d xscaler \
-      -c "SELECT error FROM agent_config_deliveries WHERE status='failed' LIMIT 5;" -t -A
-    ```
-    Common causes: Invalid YAML in template, secret reference `${secret:NAME}` with no matching secret.
+    Open the portal **Agents → Fleet → [agent] → Config History** and click the failed delivery row to see the error detail.
+
+    Common causes:
+    - Invalid YAML in the template (syntax error)
+    - A `${secret:NAME}` placeholder with no matching secret in **Config → Secrets**
+    - Agent reported an error applying the config (check agent supervisor logs)
 
 ---
 
@@ -95,17 +79,17 @@ curl -s http://<envoy-admin>/stats | grep "upstream_rq_total"
 
 ??? failure "Metrics not appearing in Grafana"
     ```bash
-    # 1. Check xMetrics has received data
+    # Check xMetrics has received data for your tenant
     curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/query" \
       -H "X-Scope-OrgID: $TENANT_ID" \
+      -H "Authorization: Bearer $API_KEY" \
       --data-urlencode 'query=count({__name__=~".+"})' | jq '.data.result'
-
-    # 2. Check OTel collector exporter
-    docker compose logs otel-collector | grep "prometheusremotewrite" | tail -10
-
-    # 3. Check xMetrics ingestion errors
-    docker compose logs client-mimir | grep "error\|Error" | tail -20
     ```
+    If this returns empty, the collector is not reaching the metrics endpoint. Check:
+
+    1. Collector exporter endpoint matches `https://<edge>.m.xscalerlabs.com/otlp` (or the remote_write URL)
+    2. API key has not expired — rotate in the portal if needed
+    3. The `X-Scope-OrgID` / tenant ID in the collector config matches an active tenant
 
 ??? failure "xMetrics returns 400 snappy decoding error"
     The remote_write request must be snappy-encoded. Use the OTel Collector `prometheusremotewrite` exporter — it handles encoding automatically.
@@ -153,25 +137,6 @@ curl -s http://<envoy-admin>/stats | grep "upstream_rq_total"
     ```bash
     echo -n "$TRACE_ID" | wc -c   # Must output 32
     ```
-
----
-
-## PostgreSQL Issues
-
-```bash
-# Connect to PostgreSQL
-docker compose exec postgres psql -U xscaler -d xscaler
-
-# Check all table row counts
-\dt
-SELECT schemaname, tablename, n_live_tup FROM pg_stat_user_tables ORDER BY n_live_tup DESC;
-
-# Check active connections
-SELECT count(*) FROM pg_stat_activity;
-
-# Check LISTEN/NOTIFY
-SELECT pid, query, state FROM pg_stat_activity WHERE query LIKE '%LISTEN%';
-```
 
 ---
 

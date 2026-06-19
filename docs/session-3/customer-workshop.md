@@ -116,22 +116,22 @@ Calculate:
 graph TB
     subgraph prod-uk["prod-uk Kubernetes Cluster"]
         subgraph Services
-            SVC1[payment-api\nJava + javaagent]
-            SVC2[fraud-detect\nJava + javaagent]
-            SVC3[notify-svc\nNode.js + OTel SDK]
+            SVC1[payment-api Java + javaagent]
+            SVC2[fraud-detect Java + javaagent]
+            SVC3[notify-svc Node.js + OTel SDK]
         end
         subgraph "OTel Tier"
-            DS[OTel DaemonSet\n1 pod per node]
+            DS[OTel DaemonSet 1 pod per node]
         end
         subgraph "Credentials"
-            K8S[Kubernetes Secret:\nxscaler-credentials]
+            K8S[Kubernetes Secret: xscaler-credentials]
         end
         SVC1 & SVC2 & SVC3 -->|OTLP| DS
         K8S -.->|env vars| DS
     end
 
     subgraph "xScaler"
-        PORTAL[Portal\nTenant: PayFast UK Prod]
+        PORTAL[Portal Tenant: PayFast UK Prod]
         EDGE[Edge: euw1-01]
     end
 

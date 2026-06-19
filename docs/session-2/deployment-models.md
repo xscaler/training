@@ -14,18 +14,18 @@
 ```mermaid
 graph TB
     subgraph "Option A: Direct SDK → Backend"
-        APP_A[Application\n+ OTel SDK] -->|OTLP| XS_A[xScaler Edge]
+        APP_A[Application + OTel SDK] -->|OTLP| XS_A[xScaler Edge]
     end
 
     subgraph "Option B: Agent Mode"
-        APP_B[Application\n+ OTel SDK] -->|OTLP| COL_B[OTel Collector\n(co-located)]
+        APP_B[Application + OTel SDK] -->|OTLP| COL_B[OTel Collector (co-located)]
         COL_B -->|OTLP / PRW| XS_B[xScaler Edge]
     end
 
     subgraph "Option C: Gateway Mode"
-        APP_C1[App 1\n+ OTel SDK] -->|OTLP| GW[OTel Gateway\n(centralised)]
-        APP_C2[App 2\n+ OTel SDK] -->|OTLP| GW
-        APP_C3[App 3\n+ OTel SDK] -->|OTLP| GW
+        APP_C1[App 1 + OTel SDK] -->|OTLP| GW[OTel Gateway (centralised)]
+        APP_C2[App 2 + OTel SDK] -->|OTLP| GW
+        APP_C3[App 3 + OTel SDK] -->|OTLP| GW
         GW -->|OTLP / PRW| XS_C[xScaler Edge]
     end
 ```
@@ -64,11 +64,11 @@ One OTel Collector per node, deployed as a **DaemonSet**. Applications send OTLP
 ```mermaid
 graph TB
     subgraph "Kubernetes Node 1"
-        APP1[App Pod\n+ OTel SDK] -->|OTLP| COL1[OTel Collector\nDaemonSet Pod]
-        APP2[App Pod\n+ OTel SDK] -->|OTLP| COL1
+        APP1[App Pod + OTel SDK] -->|OTLP| COL1[OTel Collector DaemonSet Pod]
+        APP2[App Pod + OTel SDK] -->|OTLP| COL1
     end
     subgraph "Kubernetes Node 2"
-        APP3[App Pod\n+ OTel SDK] -->|OTLP| COL2[OTel Collector\nDaemonSet Pod]
+        APP3[App Pod + OTel SDK] -->|OTLP| COL2[OTel Collector DaemonSet Pod]
     end
 
     COL1 & COL2 -->|HTTPS| XS[xScaler Edge Cluster]
@@ -140,11 +140,11 @@ graph TB
     end
 
     subgraph "Gateway Tier"
-        GW[OTel Gateway\nDeployment\n2 replicas]
+        GW[OTel Gateway Deployment 2 replicas]
     end
 
     subgraph "Load Balancer"
-        LB[Kubernetes Service\nClusterIP]
+        LB[Kubernetes Service ClusterIP]
     end
 
     A1 & A2 & A3 & A4 --> LB --> GW
@@ -191,12 +191,12 @@ For large-scale production, use both:
 ```mermaid
 graph LR
     subgraph "Nodes"
-        COL1[Agent DaemonSet\nNode 1]
-        COL2[Agent DaemonSet\nNode 2]
-        COL3[Agent DaemonSet\nNode 3]
+        COL1[Agent DaemonSet Node 1]
+        COL2[Agent DaemonSet Node 2]
+        COL3[Agent DaemonSet Node 3]
     end
     subgraph "Gateway"
-        GW[OTel Gateway\n2+ replicas]
+        GW[OTel Gateway 2+ replicas]
     end
 
     COL1 & COL2 & COL3 -->|OTLP| GW
@@ -238,17 +238,17 @@ Review the existing deployment configs in the repository:
 
 ```bash
 # Agent mode (local dev agent)
-cat deploy/agents/agent-1.supervisor.yaml
+cat 
 
 # Platform OTel collector (edge monitoring)
-cat deploy/otel/otel-collector.yaml
+cat 
 
 # Edge cluster OTel collector (production)
-cat charts/edge-xscaler/templates/otel-collector-configmap.yaml
+cat 
 ```
 
 Answer these questions:
-1. Which component type is `deploy/otel/otel-collector.yaml`? (Agent/Gateway/Platform)
+1. Which component type is ``? (Agent/Gateway/Platform)
 2. What targets does it scrape?
 3. Where does it send data?
 

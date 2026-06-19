@@ -16,8 +16,8 @@ In xScaler, "Agent Mode" has a specific meaning: an OTel Collector managed by an
 ```mermaid
 graph TB
     subgraph "Customer Infrastructure"
-        SUP[OpAMP Supervisor\notelcol-supervisor]
-        COL[OTel Collector\notelcol-contrib]
+        SUP[OpAMP Supervisor otelcol-supervisor]
+        COL[OTel Collector otelcol-contrib]
         SUP -->|manage process| COL
     end
 
@@ -52,13 +52,13 @@ OpAMP is a WebSocket-based protocol for managing OTel agents remotely. The xScal
 - Track which configuration version each agent is running
 - Re-send configuration when an agent comes online or disconnects
 
-**OpAMP Supervisor config** (`deploy/agents/agent-1.supervisor.yaml`):
+**OpAMP Supervisor config** (``):
 
 ```yaml
 server:
   endpoint: ws://agent-api:8082/v1/opamp   # WebSocket connection
   headers:
-    Authorization: "Bearer xse_localdev0000000000000000000000"
+    Authorization: "Bearer xse_<enrollment-token>"
 
 capabilities:
   accepts_remote_config: true        # Agent will accept pushed configs
@@ -126,12 +126,12 @@ graph TB
             A2[Service B] --> GW
             A3[Service C] --> GW
         end
-        GW[OTel Gateway\nDeployment\nconfigmap-based config]
-        CM[ConfigMap:\ncollector.yaml]
+        GW[OTel Gateway Deployment configmap-based config]
+        CM[ConfigMap: collector.yaml]
         CM -.->|mounted| GW
     end
 
-    GW -->|HTTPS + API Key| XS[xScaler Edge\nEuvoy Gateway]
+    GW -->|HTTPS + API Key| XS[xScaler Edge Euvoy Gateway]
 ```
 
 **Gateway Mode configuration** — no OpAMP, static ConfigMap:
@@ -209,7 +209,7 @@ data:
 
 ```bash
 # 1. Check the agent supervisor config
-cat deploy/agents/agent-1.supervisor.yaml
+cat 
 
 # 2. Watch agent-1 connect to agent-api
 docker compose logs agent-1 --tail=30 --follow

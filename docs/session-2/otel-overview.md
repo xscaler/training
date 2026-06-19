@@ -55,16 +55,16 @@ graph LR
 ```mermaid
 graph TB
     subgraph "Application Layer"
-        SDK["OTel SDK\n(Java / Go / Python / Node.js / ...)"]
-        AUTO["Auto-instrumentation\n(agent/zero-code)"]
-        MANUAL["Manual instrumentation\n(spans, metrics, logs)"]
+        SDK["OTel SDK (Java / Go / Python / Node.js / ...)"]
+        AUTO["Auto-instrumentation (agent/zero-code)"]
+        MANUAL["Manual instrumentation (spans, metrics, logs)"]
     end
     subgraph "Collection Layer"
-        COL["OTel Collector\notelcol-contrib binary"]
-        SUP["OpAMP Supervisor\nConfig management agent"]
+        COL["OTel Collector otelcol-contrib binary"]
+        SUP["OpAMP Supervisor Config management agent"]
     end
     subgraph "Protocol"
-        OTLP["OTLP\n(gRPC :4317 / HTTP :4318)"]
+        OTLP["OTLP (gRPC :4317 / HTTP :4318)"]
         PRW["Prometheus remote_write"]
         LOKI["xLogs HTTP push"]
     end
@@ -170,17 +170,17 @@ xScaler uses OTel in two distinct ways:
 
 ### 1. Platform Self-Monitoring
 
-The OTel Collector in the edge cluster scrapes platform component metrics and sends them to `system-mimir`:
+The OTel Collector in the edge cluster scrapes platform component metrics and sends them to `platform-metrics`:
 
 ```yaml
-# deploy/otel/otel-collector.yaml (local dev)
+#  (local dev)
 receivers:
   prometheus:
     config:
       scrape_configs:
         - job_name: mimir
           static_configs:
-            - targets: ['client-mimir:9009']
+            - targets: ['xMetrics:9009']
               labels: {xscaler_cluster: local}
         - job_name: envoy
           static_configs:
@@ -192,7 +192,7 @@ receivers:
               labels: {xscaler_cluster: local}
         - job_name: loki
           static_configs:
-            - targets: ['client-loki:3100']
+            - targets: ['xLogs:3100']
               labels: {xscaler_cluster: local}
         - job_name: tempo
           static_configs:
@@ -200,9 +200,9 @@ receivers:
               labels: {xscaler_cluster: local}
 exporters:
   prometheusremotewrite:
-    endpoint: http://system-mimir:9009/api/v1/push
+    endpoint: http://platform-metrics:9009/api/v1/push
     headers:
-      X-Scope-OrgID: system-monitoring
+      X-Scope-OrgID: <your-tenant-id>
 ```
 
 ### 2. Tenant Data Collection
@@ -226,7 +226,7 @@ exporters:
 
 ```bash
 # View the local dev OTel collector configuration
-cat /path/to/xscaler/deploy/otel/otel-collector.yaml
+cat /path/to/xscaler/
 
 # Watch the collector in action
 docker compose logs otel-collector --follow --tail=20

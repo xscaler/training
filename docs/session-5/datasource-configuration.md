@@ -199,12 +199,12 @@ curl -s -X POST "$GRAFANA_URL/api/datasources" \
     "name": "Training Metrics",
     "type": "prometheus",
     "access": "proxy",
-    "url": "http://client-mimir:9009/prometheus",
+    "url": "http://xMetrics:9009/prometheus",
     "jsonData": {
       "httpHeaderName1": "X-Scope-OrgID"
     },
     "secureJsonData": {
-      "httpHeaderValue1": "'"$LOADGEN_GRAFANA_TENANT"'"
+      "httpHeaderValue1": "'"<your-tenant-id>"'"
     }
   }' | jq '.message'
 
@@ -218,10 +218,10 @@ curl -s "$GRAFANA_URL/api/datasources/$DS_ID/health" \
 
 ### Exercise 5.4 — Verify Cross-Signal Correlation
 
-1. In Grafana Explore, select `tempo` datasource
+1. In Grafana Explore, select `xTraces` datasource
 2. Click **Search** → Run Query
 3. Click any trace → expand a span
-4. Click the **Logs** button — you should see log lines from `client-loki` filtered by `trace_id`
+4. Click the **Logs** button — you should see log lines from `xLogs` filtered by `trace_id`
 
 <div class="screenshot-placeholder">
 [Screenshot: xTraces trace view with a span expanded and "Logs for this span" panel showing log lines from xLogs]

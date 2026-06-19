@@ -68,7 +68,7 @@ Congratulations on completing the xScaler Observability Platform Training! Over 
 | **xMetrics** | Multi-tenant metrics: `multitenancy_enabled: true`, port 9009 |
 | **xLogs** | Multi-tenant logs: `auth_enabled: true`, HTTP 3100, gRPC 9095 |
 | **xTraces** | Multi-tenant traces: `multitenancy_enabled: true`, HTTP 3200 |
-| **mimir-sync** | Polls xMetrics every 60s for usage → writes PostgreSQL rollup tables |
+| **usage-sync** | Polls xMetrics every 60s for usage → writes PostgreSQL rollup tables |
 | **Four golden signals** | Latency, Traffic, Errors, Saturation — the foundation of SRE alerting |
 
 ---

@@ -41,12 +41,12 @@ The Session 7 lab is a **complete end-to-end exercise** that combines all previo
 ```mermaid
 graph LR
     T[1. Create Tenant] --> K[2. Create API Key]
-    K --> A[3. Deploy Agent\n+ Config Template]
-    A --> D[4. Send Test Data\n+ Verify Ingestion]
-    D --> G[5. Configure Grafana\nDatasources]
+    K --> A[3. Deploy Agent + Config Template]
+    A --> D[4. Send Test Data + Verify Ingestion]
+    D --> G[5. Configure Grafana Datasources]
     G --> DB[6. Build Dashboard]
     DB --> AL[7. Create Alert]
-    AL --> V[8. Validate\nEnd-to-End]
+    AL --> V[8. Validate End-to-End]
 ```
 
 ---

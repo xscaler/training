@@ -14,12 +14,12 @@
 ```mermaid
 graph LR
     subgraph "Pull Model (Prometheus Scrape)"
-        COL_PULL[OTel Collector] -->|HTTP GET /metrics| APP_PULL[Application\n:8080/metrics]
+        COL_PULL[OTel Collector] -->|HTTP GET /metrics| APP_PULL[Application :8080/metrics]
         COL_PULL -->|remote_write| MI_PULL[xMetrics]
     end
 
     subgraph "Push Model (OTLP)"
-        APP_PUSH[Application\n+ OTel SDK] -->|OTLP push| COL_PUSH[OTel Collector]
+        APP_PUSH[Application + OTel SDK] -->|OTLP push| COL_PUSH[OTel Collector]
         COL_PUSH -->|remote_write / OTLP| MI_PUSH[xMetrics]
     end
 ```
@@ -41,7 +41,7 @@ graph LR
 xScaler's edge OTel Collector scrapes platform component metrics using the Prometheus receiver:
 
 ```yaml
-# From deploy/otel/otel-collector.yaml (actual repository config)
+# From  (actual repository config)
 receivers:
   prometheus:
     config:
@@ -49,7 +49,7 @@ receivers:
         - job_name: mimir
           scrape_interval: 15s
           static_configs:
-            - targets: ['client-mimir:9009']
+            - targets: ['xMetrics:9009']
               labels:
                 xscaler_cluster: local
 
@@ -70,7 +70,7 @@ receivers:
         - job_name: loki
           scrape_interval: 15s
           static_configs:
-            - targets: ['client-loki:3100']
+            - targets: ['xLogs:3100']
               labels:
                 xscaler_cluster: local
 
@@ -82,7 +82,7 @@ receivers:
                 xscaler_cluster: local
 ```
 
-**Production edge OTel collector** uses DNS-based service discovery (from `charts/edge-xscaler/templates/otel-collector-configmap.yaml`):
+**Production edge OTel collector** uses DNS-based service discovery (from ``):
 
 ```yaml
 scrape_configs:
@@ -214,12 +214,12 @@ curl -s https://<edge>.m.xscalerlabs.com/metrics | head -20
 
 # 2. Query active series count via PromQL
 curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/query" \
-  -H "X-Scope-OrgID: system-monitoring" \
+  -H "X-Scope-OrgID: <your-tenant-id>" \
   --data-urlencode 'query=count({__name__=~".+"})' | jq '.data.result'
 
 # 3. Check scrape targets
 curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/targets" \
-  -H "X-Scope-OrgID: system-monitoring" | jq '.data.activeTargets | length'
+  -H "X-Scope-OrgID: <your-tenant-id>" | jq '.data.activeTargets | length'
 ```
 
 ### Exercise 3.2 — Push a Test Metric
@@ -239,7 +239,7 @@ curl -s -X POST "https://<edge>.m.xscalerlabs.com/api/v1/push" \
 ## Validation
 
 - [ ] Prometheus receiver scrape targets are visible in `docker compose logs otel-collector`
-- [ ] PromQL `up` returns values in the system-mimir Grafana datasource
+- [ ] PromQL `up` returns values in the platform-metrics Grafana datasource
 - [ ] You can explain the difference between pull and push collection
 
 ---

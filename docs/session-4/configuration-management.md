@@ -16,22 +16,22 @@
 graph TB
     subgraph "Portal (Admin)"
         CT[Config Template]
-        CR1[Revision 1\nbase config]
-        CR2[Revision 2\nadded receivers]
-        CA1[Assignment 1\npriority 0\nlabel: {}]
-        CA2[Assignment 2\npriority 50\nlabel: {team: backend}]
-        CS[Secrets\n${secret:api_key}]
+        CR1[Revision 1 base config]
+        CR2[Revision 2 added receivers]
+        CA1[Assignment 1 priority 0 label: {}]
+        CA2[Assignment 2 priority 50 label: {team: backend}]
+        CS[Secrets ${secret:api_key}]
     end
 
     subgraph "Delivery"
         AA[agent-api]
-        KMS[AWS KMS\ndecrypt secrets]
+        KMS[AWS KMS decrypt secrets]
     end
 
     subgraph "Agents"
-        AG1[Agent A\nteam: backend]
-        AG2[Agent B\nteam: frontend]
-        AG3[Agent C\nno team label]
+        AG1[Agent A team: backend]
+        AG2[Agent B team: frontend]
+        AG3[Agent C no team label]
     end
 
     CT --> CR1 & CR2
@@ -181,20 +181,20 @@ An agent with labels `{environment: "production", team: "database"}` receives pr
 
 ```mermaid
 flowchart TD
-    A[Create new template revision] --> B[Create targeted assignment\npriority 90, canary=true]
-    B --> C[Label one agent\ncanary=true]
-    C --> D{Verify canary agent:\nstatus=applied?}
-    D -->|No - failed| E[Check agent logs\nFix YAML error]
-    D -->|Yes - applied| F{Monitor 15 minutes:\nno errors?}
-    F -->|Errors found| G[Rollback:\ncreate assignment pointing\nto previous revision]
-    F -->|Clean| H[Remove canary assignment\nCreate fleet assignment]
-    H --> I[Monitor delivery\nall agents applied?]
+    A[Create new template revision] --> B[Create targeted assignment priority 90, canary=true]
+    B --> C[Label one agent canary=true]
+    C --> D{Verify canary agent: status=applied?}
+    D -->|No - failed| E[Check agent logs Fix YAML error]
+    D -->|Yes - applied| F{Monitor 15 minutes: no errors?}
+    F -->|Errors found| G[Rollback: create assignment pointing to previous revision]
+    F -->|Clean| H[Remove canary assignment Create fleet assignment]
+    H --> I[Monitor delivery all agents applied?]
 ```
 
 ### Create Assignment via SQL (for local dev)
 
 ```sql
--- From scripts/agents/seed-local.sql
+-- From scripts/agents/
 INSERT INTO agent_config_assignments (
   id,
   organization_id,

@@ -9,22 +9,22 @@ graph TB
     subgraph "Customer K8s Node 1"
         APP1[App Pod: service-a]
         APP2[App Pod: service-b]
-        SUP1[OpAMP Supervisor\nDaemonSet Pod]
-        COL1[otelcol-contrib\nmanaged by supervisor]
+        SUP1[OpAMP Supervisor DaemonSet Pod]
+        COL1[otelcol-contrib managed by supervisor]
         APP1 & APP2 -->|OTLP :4317| COL1
         SUP1 -->|manage process| COL1
     end
 
     subgraph "Customer K8s Node 2"
         APP3[App Pod: service-c]
-        SUP2[OpAMP Supervisor\nDaemonSet Pod]
+        SUP2[OpAMP Supervisor DaemonSet Pod]
         COL2[otelcol-contrib]
         APP3 -->|OTLP :4317| COL2
         SUP2 -->|manage process| COL2
     end
 
     subgraph "xScaler Control"
-        AA[agent-api\n:8082]
+        AA[agent-api :8082]
         PG[(PostgreSQL)]
     end
 
@@ -37,13 +37,13 @@ graph TB
     COL1 & COL2 -->|HTTPS metrics/logs/traces| EN
 ```
 
-## Supervisor Config (from `deploy/agents/agent-1.supervisor.yaml`)
+## Supervisor Config (from ``)
 
 ```yaml
 server:
   endpoint: ws://agent-api:8082/v1/opamp
   headers:
-    Authorization: "Bearer xse_localdev0000000000000000000000"
+    Authorization: "Bearer xse_<enrollment-token>"
 
 capabilities:
   accepts_remote_config: true

@@ -293,7 +293,7 @@ echo "Backup: $BACKUP_KEY"
     - Always create **two API keys per tenant**: active + backup
     - API key value is shown **once** — save immediately to secret manager
     - Revocation has up to **15 second propagation delay** (proxy-auth cache)
-    - `mimir-sync` runs every **60 seconds** to update usage metrics in PostgreSQL
+    - `usage-sync` runs every **60 seconds** to update usage metrics in PostgreSQL
 
 ---
 

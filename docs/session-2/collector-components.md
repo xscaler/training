@@ -14,10 +14,10 @@
 ```mermaid
 graph LR
     subgraph Receivers
-        R1[OTLP gRPC\n:4317]
-        R2[OTLP HTTP\n:4318]
-        R3[Prometheus\nscrape]
-        R4[Filelog\n/var/log/*.log]
+        R1[OTLP gRPC :4317]
+        R2[OTLP HTTP :4318]
+        R3[Prometheus scrape]
+        R4[Filelog /var/log/*.log]
     end
     subgraph Processors
         P1[memory_limiter]
@@ -26,10 +26,10 @@ graph LR
         P4[attributes]
     end
     subgraph Exporters
-        E1[prometheusremotewrite\n→ xMetrics]
-        E2[otlphttp\n→ xTraces]
-        E3[otlphttp\n→ xLogs]
-        E4[debug\nconsole]
+        E1[prometheusremotewrite → xMetrics]
+        E2[otlphttp → xTraces]
+        E3[otlphttp → xLogs]
+        E4[debug console]
     end
 
     R1 & R2 -->|traces/metrics/logs| P1 --> P2 --> P3 --> P4
@@ -291,7 +291,7 @@ service:
 
 ## Complete Example — xScaler Agent Mode Config
 
-Based on `deploy/otel/otel-collector.yaml` from the repository:
+Based on `` from the repository:
 
 ```yaml
 # otel-collector-agent.yaml

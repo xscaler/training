@@ -15,18 +15,18 @@
 ```mermaid
 graph TB
     subgraph "Alert Creation"
-        AR[Alert Rule\nPromQL query + condition]
+        AR[Alert Rule PromQL query + condition]
     end
     subgraph "Evaluation"
-        AE[Alert Evaluation\nevery 1m / 5m]
-        ST["State Machine\nNormal → Pending → Firing → Normal"]
+        AE[Alert Evaluation every 1m / 5m]
+        ST["State Machine Normal → Pending → Firing → Normal"]
     end
     subgraph "Routing"
-        NP[Notification Policy\nroutes by labels]
-        CP[Contact Point\nSlack / PagerDuty / Email]
+        NP[Notification Policy routes by labels]
+        CP[Contact Point Slack / PagerDuty / Email]
     end
     subgraph "Silencing"
-        SL[Silences\ntime-based muting]
+        SL[Silences time-based muting]
     end
 
     AR --> AE --> ST --> NP --> CP
@@ -120,7 +120,7 @@ Labels: severity=warning
        - Group: `golden-signals`
 
     3. **Section 2 — Set a query and alert condition**
-       - Datasource: `xScaler Metrics` (or `client-mimir`)
+       - Datasource: `xScaler Metrics` (or `xMetrics`)
        - Query A:
        ```promql
        sum(rate(http_requests_total{status=~"5.."}[5m]))
@@ -223,12 +223,12 @@ Notification policies route alerts to the correct contact point based on labels:
 
 ```mermaid
 graph TD
-    ALERT[Incoming Alert\nlabels: severity=critical, team=platform]
-    P1{Policy 1:\nseverity=critical?}
-    P2{Policy 2:\nteam=platform?}
-    CP1[PagerDuty\nContact Point]
-    CP2[Slack Platform\nContact Point]
-    DEF[Default:\nEmail]
+    ALERT[Incoming Alert labels: severity=critical, team=platform]
+    P1{Policy 1: severity=critical?}
+    P2{Policy 2: team=platform?}
+    CP1[PagerDuty Contact Point]
+    CP2[Slack Platform Contact Point]
+    DEF[Default: Email]
 
     ALERT --> P1
     P1 -->|Yes| CP1

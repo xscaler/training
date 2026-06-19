@@ -46,9 +46,9 @@ Variables make dashboards reusable across services and tenants:
 
 ```mermaid
 graph LR
-    V1["$service\nQuery: label_values(http_requests_total, service)"]
-    V2["$interval\nInterval: 1m,5m,15m,30m"]
-    V3["$tenant\nQuery: label_values(cortex_ingester_active_series, user)"]
+    V1["$service Query: label_values(http_requests_total, service)"]
+    V2["$interval Interval: 1m,5m,15m,30m"]
+    V3["$tenant Query: label_values(cortex_ingester_active_series, user)"]
 
     V1 & V2 & V3 --> PANEL[Dashboard Panels]
 ```
@@ -164,7 +164,7 @@ sum(rate({service="$service"} |= "error" [$interval]))
 
 1. In Grafana, click **Dashboards → New → New Dashboard**
 2. Click **Add panel**
-3. Select `client-mimir` datasource
+3. Select `xMetrics` datasource
 4. Add the request rate query:
 
 ```promql
@@ -195,7 +195,7 @@ sum(rate(http_requests_total{status=~"5.."}[$__rate_interval]))
 2. Configure:
    - Type: **Query**
    - Name: `service`
-   - Datasource: `client-mimir`
+   - Datasource: `xMetrics`
    - Query: `label_values(up, job)`
    - Refresh: **On time range change**
 3. Save variable
@@ -207,7 +207,7 @@ sum(rate(http_requests_total{status=~"5.."}[$__rate_interval]))
 ## Validation
 
 - [ ] Dashboard has at least 4 panels (one per golden signal)
-- [ ] Panels display data from `client-mimir`
+- [ ] Panels display data from `xMetrics`
 - [ ] `$service` variable filters panels correctly
 - [ ] Error rate panel has threshold colour applied
 

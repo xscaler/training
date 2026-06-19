@@ -22,7 +22,7 @@ sequenceDiagram
 
     PA->>PA: Check rate limits\n(max_active_series + scrape interval)
 
-    PA->>EN: OkHttpResponse {\n  headers_to_set: [\n    {X-Scope-OrgID: xs_payment_abc12345}\n  ]\n}
+    PA->>EN: OkHttpResponse {\n  headers_to_set: [     {X-Scope-OrgID: xs_payment_abc12345}   ]\n}
 
     EN->>MI: POST /api/v1/push\nX-Scope-OrgID: xs_payment_abc12345\n[Snappy-encoded data]
 

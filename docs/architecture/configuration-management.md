@@ -46,15 +46,15 @@ sequenceDiagram
 
 ```mermaid
 graph LR
-    T[Template:\nProd K8s Agent]
-    R1[Revision 1\nBase OTLP config]
-    R2[Revision 2\n+ hostmetrics]
-    R3[Revision 3\n+ attributes processor]
+    T[Template: Prod K8s Agent]
+    R1[Revision 1 Base OTLP config]
+    R2[Revision 2 + hostmetrics]
+    R3[Revision 3 + attributes processor]
 
     T --> R1 --> R2 --> R3
 
-    A1[Assignment\npriority 0\nlabel: {}]
-    A2[Assignment\npriority 50\nlabel: {team:db}]
+    A1[Assignment priority 0 label: {}]
+    A2[Assignment priority 50 label: {team:db}]
 
     R3 --> A1 & A2
     A1 -->|matches all| AGENTS[All Agents]

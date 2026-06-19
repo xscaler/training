@@ -8,16 +8,16 @@ Configure and verify all three xScaler datasources in Grafana, including cross-s
 
 - [ ] Lab 01 completed (`PROD_TENANT` and `PROD_API_KEY` exported)
 - [ ] Grafana accessible: `https://<slug>.g.xscalerlabs.com`
-- [ ] Local stack running
+- [ ] Training environment running
 
 ## Architecture
 
 ```mermaid
 graph LR
     GR[Grafana :3001]
-    DS_M[Datasource:\nPrometheus / xMetrics]
-    DS_L[Datasource:\nLoki]
-    DS_T[Datasource:\nTempo]
+    DS_M[Datasource: Prometheus / xMetrics]
+    DS_L[Datasource: Loki]
+    DS_T[Datasource: Tempo]
     MI[xMetrics :9009]
     LO[xLogs :3100]
     TE[xTraces :3200]
@@ -33,7 +33,7 @@ graph LR
 
 1. Open `https://<slug>.g.xscalerlabs.com` (admin/admin)
 2. Navigate to **Connections → Data Sources**
-3. Verify four datasources exist: `system-mimir`, `client-mimir`, `client-loki`, `tempo`
+3. Verify four datasources exist: `platform-metrics`, `xMetrics`, `xLogs`, `tempo`
 4. Click **Test** on each — all should show green
 
 ### Step 2 — Verify Metrics Datasource
@@ -41,14 +41,14 @@ graph LR
 ```bash
 # Direct query to confirm data exists
 curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/query" \
-  -H "X-Scope-OrgID: system-monitoring" \
+  -H "X-Scope-OrgID: <your-tenant-id>" \
   --data-urlencode 'query=up' | jq '.data.result | length'
 # Expected: > 0
 ```
 
 ### Step 3 — Verify Logs Datasource
 
-In Grafana Explore → `client-loki` datasource:
+In Grafana Explore → `xLogs` datasource:
 ```logql
 {service=~".+"}
 ```
@@ -56,7 +56,7 @@ Expected: Log streams from the loadgen service.
 
 ### Step 4 — Verify Traces Datasource
 
-In Grafana Explore → `tempo` datasource → **Search** → Run Query.
+In Grafana Explore → `xTraces` datasource → **Search** → Run Query.
 Expected: Recent traces from loadgen.
 
 ### Step 5 — Test Cross-Signal Correlation
