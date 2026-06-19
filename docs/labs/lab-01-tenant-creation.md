@@ -93,13 +93,17 @@ Backup Key: xag_z9y8x7w6v5u4t3s2r1q0p9o8n7m6l5k4
 
 ## Troubleshooting
 
-??? failure "401 on tenant creation"
-    Token may have expired (30-min TTL). Re-authenticate:
-    ```bash
-    export JWT_TOKEN=$(curl -s -X POST $PORTAL_BASE/auth/login \
-      -H "Content-Type: application/json" \
-      -d '{"email":"admin@example.com","password":"Training123!"}' | jq -r '.token')
-    ```
+<details>
+<summary><strong>401 on tenant creation</strong></summary>
+
+Token may have expired (30-min TTL). Re-authenticate:
+```bash
+export JWT_TOKEN=$(curl -s -X POST $PORTAL_BASE/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"Training123!"}' | jq -r '.token')
+```
+
+</details>
 
 ---
 

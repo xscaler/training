@@ -257,12 +257,15 @@ docker compose logs agent-api --tail=20
 
 ## Key Takeaways
 
-!!! success "Session 2.4 Summary"
-    - **Agent Mode** in xScaler = OTel Collector managed by OpAMP supervisor + `agent-api`
-    - **Gateway Mode** = static OTel Deployment with ConfigMap-based configuration
-    - **OpAMP** enables remote config push, health monitoring, and delivery tracking without SSH
-    - Agent enrollment: `xse_` token (fleet) → `xag_` key (per-agent) via two-phase exchange
-    - Config delivery tracked in `agent_config_deliveries` table: `offered → applying → applied | failed`
+:::tip[Session 2.4 Summary]
+
+- **Agent Mode** in xScaler = OTel Collector managed by OpAMP supervisor + `agent-api`
+- **Gateway Mode** = static OTel Deployment with ConfigMap-based configuration
+- **OpAMP** enables remote config push, health monitoring, and delivery tracking without SSH
+- Agent enrollment: `xse_` token (fleet) → `xag_` key (per-agent) via two-phase exchange
+- Config delivery tracked in `agent_config_deliveries` table: `offered → applying → applied | failed`
+
+:::
 
 ---
 

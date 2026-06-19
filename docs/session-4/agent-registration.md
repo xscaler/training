@@ -213,14 +213,17 @@ docker compose logs agent-api --follow --tail=5
 
 ## Key Takeaways
 
-!!! success "Session 4.3 Summary"
-    - OpAMP is bidirectional WebSocket — both agent and server can send messages at any time
-    - Config delivery is tracked: `offered → applying → applied | failed`
-    - Stale sweep runs every **30s** — agents must heartbeat within **90s** to stay active
-    - PostgreSQL **NOTIFY/LISTEN** on `agent_config_changed` triggers near-real-time config push
-    - Effective configs are redacted by `redactEffectiveConfig()` before storing — secrets never stored in DB
+:::tip[Session 4.3 Summary]
+
+- OpAMP is bidirectional WebSocket — both agent and server can send messages at any time
+- Config delivery is tracked: `offered → applying → applied | failed`
+- Stale sweep runs every **30s** — agents must heartbeat within **90s** to stay active
+- PostgreSQL **NOTIFY/LISTEN** on `agent_config_changed` triggers near-real-time config push
+- Effective configs are redacted by `redactEffectiveConfig()` before storing — secrets never stored in DB
+
+:::
 
 ---
 
-*← Previous: [Agent Deployment](agent-deployment.md)*  
+*← Previous: [Agent Deployment](agent-deployment.mdx)*  
 *Next: [Configuration Management →](configuration-management.md)*

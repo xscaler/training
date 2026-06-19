@@ -25,50 +25,54 @@ The platform is built on proven open-source observability backends wrapped with 
 
 xScaler separates the **control plane** (global, single cluster) from the **edge data plane** (regional, one cluster per region). Telemetry from your services is always written to the closest edge cluster; the control plane handles configuration, billing, and management.
 
-??? info "Detailed Architecture Diagram"
+<details>
+<summary><strong>Detailed Architecture Diagram</strong></summary>
 
-    ```mermaid
-    graph TB
-        subgraph CP["Control Plane"]
-            PA[portal-api]
-            PW[portal-web]
-            AA[agent-api]
-            PR[provisioning service]
-            PG[(PostgreSQL)]
-            AC[the platform deployment system]
-        end
 
-        subgraph EDGE["Edge Cluster — euw1-01 (eu-west-1)"]
-            EN[Envoy Gateway]
-            PXM[proxy-auth / metrics]
-            PXL[proxy-auth / logs]
-            PXT[proxy-auth / traces]
-            MI[xMetrics]
-            LO[xLogs]
-            TE[xTraces]
-            GR[Managed Grafana]
-            OC[OTel Collector]
-        end
+```mermaid
+graph TB
+    subgraph CP["Control Plane"]
+        PA[portal-api]
+        PW[portal-web]
+        AA[agent-api]
+        PR[provisioning service]
+        PG[(PostgreSQL)]
+        AC[the platform deployment system]
+    end
 
-        subgraph S3["Object Storage"]
-            S3M[metrics bucket]
-            S3L[logs bucket]
-            S3T[traces bucket]
-        end
+    subgraph EDGE["Edge Cluster — euw1-01 (eu-west-1)"]
+        EN[Envoy Gateway]
+        PXM[proxy-auth / metrics]
+        PXL[proxy-auth / logs]
+        PXT[proxy-auth / traces]
+        MI[xMetrics]
+        LO[xLogs]
+        TE[xTraces]
+        GR[Managed Grafana]
+        OC[OTel Collector]
+    end
 
-        Users -->|HTTPS| PW
-        PW -->|REST| PA
-        PA <-->|Read/Write| PG
-        AC -->|GitOps sync| EDGE
+    subgraph S3["Object Storage"]
+        S3M[metrics bucket]
+        S3L[logs bucket]
+        S3T[traces bucket]
+    end
 
-        Collectors -->|OTLP| EN
-        EN -->|ext_authz| PXM & PXL & PXT
-        PXM & PXL & PXT -->|X-Scope-OrgID| MI & LO & TE
-        MI --> S3M
-        LO --> S3L
-        TE --> S3T
-        PR -->|provision| GR
-    ```
+    Users -->|HTTPS| PW
+    PW -->|REST| PA
+    PA <-->|Read/Write| PG
+    AC -->|GitOps sync| EDGE
+
+    Collectors -->|OTLP| EN
+    EN -->|ext_authz| PXM & PXL & PXT
+    PXM & PXL & PXT -->|X-Scope-OrgID| MI & LO & TE
+    MI --> S3M
+    LO --> S3L
+    TE --> S3T
+    PR -->|provision| GR
+```
+
+</details>
 
 ---
 
@@ -197,8 +201,11 @@ This header is:
 2. **Enforced by Envoy** — a Lua filter rejects any request with multiple org IDs or commas
 3. **Used by xMetrics, xLogs, and xTraces** as the tenant namespace for all storage operations
 
-!!! warning "Security Model"
-    Clients never set `X-Scope-OrgID` themselves. Even if a client sends this header, the Envoy Lua filter clears it and proxy-auth overwrites it with the correct tenant ID derived from the API key lookup.
+:::warning[Security Model]
+
+Clients never set `X-Scope-OrgID` themselves. Even if a client sends this header, the Envoy Lua filter clears it and proxy-auth overwrites it with the correct tenant ID derived from the API key lookup.
+
+:::
 
 ---
 
@@ -242,35 +249,50 @@ docker compose images
 
 ## Troubleshooting
 
-??? failure "portal-api keeps restarting"
-    Usually a database connection issue. Check:
-    ```bash
-    docker compose logs portal-api | grep "error\|Error\|FATAL"
-    docker compose logs postgres | tail -20
-    ```
+<details>
+<summary><strong>portal-api keeps restarting</strong></summary>
 
-??? failure "Envoy returns 503 on port 8080"
-    proxy-auth hasn't registered with Envoy yet. Wait 10 seconds and retry.
-    ```bash
-    docker compose logs proxy-auth --tail=20
-    ```
+Usually a database connection issue. Check:
+```bash
+docker compose logs portal-api | grep "error\|Error\|FATAL"
+docker compose logs postgres | tail -20
+```
 
-??? failure "xTraces shows 'failed to create blocks'"
-    Check block retention settings and disk space:
-    ```bash
-    docker compose exec tempo df -h /tmp/tempo
-    ```
+</details>
+
+<details>
+<summary><strong>Envoy returns 503 on port 8080</strong></summary>
+
+proxy-auth hasn't registered with Envoy yet. Wait 10 seconds and retry.
+```bash
+docker compose logs proxy-auth --tail=20
+```
+
+</details>
+
+<details>
+<summary><strong>xTraces shows 'failed to create blocks'</strong></summary>
+
+Check block retention settings and disk space:
+```bash
+docker compose exec tempo df -h /tmp/tempo
+```
+
+</details>
 
 ---
 
 ## Key Takeaways
 
-!!! success "Session 1.1 Summary"
-    - xScaler uses a **two-tier model**: control plane (system cluster) + data plane (edge clusters)
-    - The **control plane** manages configuration, auth, and billing but never touches telemetry data
-    - The **data plane** processes all inbound telemetry through Envoy → proxy-auth → backend
-    - **Multi-tenancy** is enforced via the `X-Scope-OrgID` header, set exclusively by `proxy-auth`
-    - **Four Envoy listeners** handle the four protocols: metrics (8080), logs (8181), traces HTTP (8282), traces gRPC (4317)
+:::tip[Session 1.1 Summary]
+
+- xScaler uses a **two-tier model**: control plane (system cluster) + data plane (edge clusters)
+- The **control plane** manages configuration, auth, and billing but never touches telemetry data
+- The **data plane** processes all inbound telemetry through Envoy → proxy-auth → backend
+- **Multi-tenancy** is enforced via the `X-Scope-OrgID` header, set exclusively by `proxy-auth`
+- **Four Envoy listeners** handle the four protocols: metrics (8080), logs (8181), traces HTTP (8282), traces gRPC (4317)
+
+:::
 
 ---
 

@@ -2,11 +2,14 @@
 
 ## Prerequisites
 
-!!! info "What You Need"
-    - A modern web browser (Chrome, Firefox, or Edge)
-    - `curl` and `jq` installed for lab exercises
-    - An OpenTelemetry Collector or SDK for hands-on ingestion labs
-    - Training environment credentials provided by your instructor
+:::info[What You Need]
+
+- A modern web browser (Chrome, Firefox, or Edge)
+- `curl` and `jq` installed for lab exercises
+- An OpenTelemetry Collector or SDK for hands-on ingestion labs
+- Training environment credentials provided by your instructor
+
+:::
 
 ---
 
@@ -45,9 +48,12 @@ Your instructor will give you the edge hostname for today's training (`<edge>` b
 | Logs | `https://<edge>.l.xscalerlabs.com/otlp/v1/logs` | — |
 | Traces | `https://<edge>.t.xscalerlabs.com/otlp/v1/traces` | `<edge>.t.xscalerlabs.com:4317` |
 
-!!! tip "Example: EU West 1"
-    If your instructor assigns edge `euw1-01`, your logs endpoint is:
-    `https://euw1-01.l.xscalerlabs.com/otlp/v1/logs`
+:::tip[Example: EU West 1]
+
+If your instructor assigns edge `euw1-01`, your logs endpoint is:
+`https://euw1-01.l.xscalerlabs.com/otlp/v1/logs`
+
+:::
 
 ---
 
@@ -74,8 +80,11 @@ export JWT_TOKEN=$(curl -s -X POST "$PORTAL_BASE/auth/login" \
 echo "Token set: ${JWT_TOKEN:0:20}..."
 ```
 
-!!! warning "Token Expiry"
-    JWT tokens expire after **30 minutes**. Re-run the login command if you get a `401` response.
+:::warning[Token Expiry]
+
+JWT tokens expire after **30 minutes**. Re-run the login command if you get a `401` response.
+
+:::
 
 ---
 
@@ -123,14 +132,17 @@ Expected: each health check returns `ready`.
 
 ## Key Takeaways
 
-!!! success "Checkpoint"
-    - The portal lives at `https://portal.xscalerlabs.com`
-    - Edge endpoints are region-scoped: `<edge>.m/l/t.xscalerlabs.com`
-    - Set the five environment variables before starting any lab
-    - JWT tokens expire in 30 minutes — re-authenticate when they do
-    - Your Grafana is at `https://<org-slug>.g.xscalerlabs.com`
+:::tip[Checkpoint]
+
+- The portal lives at `https://portal.xscalerlabs.com`
+- Edge endpoints are region-scoped: `<edge>.m/l/t.xscalerlabs.com`
+- Set the five environment variables before starting any lab
+- JWT tokens expire in 30 minutes — re-authenticate when they do
+- Your Grafana is at `https://<org-slug>.g.xscalerlabs.com`
+
+:::
 
 ---
 
-*← Previous: [Home](index.md)*  
+*← Previous: [Home](index.mdx)*  
 *Next: [Session 1 — Overview →](session-1/overview.md)*

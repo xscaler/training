@@ -138,8 +138,11 @@ processors:
     spike_limit_mib: 64  # Burst headroom
 ```
 
-!!! warning "Always Include memory_limiter"
-    Without `memory_limiter`, a telemetry spike will OOM-kill your collector, halting all data collection until it restarts. Place it **first** in every pipeline.
+:::warning[Always Include memory_limiter]
+
+Without `memory_limiter`, a telemetry spike will OOM-kill your collector, halting all data collection until it restarts. Place it **first** in every pipeline.
+
+:::
 
 #### batch
 
@@ -284,8 +287,11 @@ service:
   extensions: [health_check, pprof, zpages]
 ```
 
-!!! info "Multiple Exporters per Pipeline"
-    One pipeline can have multiple exporters. Data is **fan-out** — a copy is sent to each exporter in parallel.
+:::info[Multiple Exporters per Pipeline]
+
+One pipeline can have multiple exporters. Data is **fan-out** — a copy is sent to each exporter in parallel.
+
+:::
 
 ---
 
@@ -418,12 +424,15 @@ echo "Config written to /tmp/my-collector.yaml"
 
 ## Key Takeaways
 
-!!! success "Session 2.2 Summary"
-    - OTel Collector has four component types: **receivers**, **processors**, **exporters**, **extensions**
-    - **Pipelines** connect them: `receivers → processors → exporters` per signal type
-    - Always include **`memory_limiter`** first — it protects against OOM crashes
-    - **`batch`** dramatically improves throughput by accumulating data before sending
-    - Multiple exporters = fan-out: one pipeline can send data to multiple backends
+:::tip[Session 2.2 Summary]
+
+- OTel Collector has four component types: **receivers**, **processors**, **exporters**, **extensions**
+- **Pipelines** connect them: `receivers → processors → exporters` per signal type
+- Always include **`memory_limiter`** first — it protects against OOM crashes
+- **`batch`** dramatically improves throughput by accumulating data before sending
+- Multiple exporters = fan-out: one pipeline can send data to multiple backends
+
+:::
 
 ---
 

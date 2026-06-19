@@ -32,7 +32,7 @@
 
 1. [Grafana Overview](grafana-overview.md) — role, datasource model, provisioning
 2. [Deployment Options](deployment-options.md) — self-managed, managed Grafana, pricing
-3. [Datasource Configuration](datasource-configuration.md) — complete setup guide
+3. [Datasource Configuration](datasource-configuration.mdx) — complete setup guide
 
 ---
 

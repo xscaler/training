@@ -55,11 +55,14 @@ By the end of Session 1, you will be able to:
 
 ## Instructor Notes
 
-!!! tip "Trainer Guidance"
-    - Open the portal at `https://portal.xscalerlabs.com` during presentation
-    - Walk through the UI live as you explain each component
-    - Emphasise the separation between control plane and data plane — this is the single most important architectural concept
-    - Students often conflate Grafana with the backend — clarify that Grafana is purely a visualisation layer
+:::tip[Trainer Guidance]
+
+- Open the portal at `https://portal.xscalerlabs.com` during presentation
+- Walk through the UI live as you explain each component
+- Emphasise the separation between control plane and data plane — this is the single most important architectural concept
+- Students often conflate Grafana with the backend — clarify that Grafana is purely a visualisation layer
+
+:::
 
 ---
 

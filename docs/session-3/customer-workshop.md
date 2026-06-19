@@ -143,36 +143,43 @@ graph TB
 
 ## Sample Solution
 
-??? success "Click to reveal suggested answer"
+<details>
+<summary><strong>Click to reveal suggested answer</strong></summary>
 
-    **Task 1 — Tenant Design:**
-    - 3 tenants: `PayFast UK Production`, `PayFast US Production`, `PayFast Staging`
-    - 2 API keys per tenant (active + backup)
-    - Start with Scale plan ($19/mo) — 20k active series included
-    - Upgrade to Enterprise if series count exceeds 20k
 
-    **Task 2 — Collector Deployment:**
-    - Agent Mode (DaemonSet) — 1 collector per node
-    - Receivers: `otlp` (receives from Java javaagent), `hostmetrics` (node metrics)
-    - Credentials: Kubernetes Secret → mounted as environment variables
-    - Egress proxy: set `HTTPS_PROXY` env var in DaemonSet pod spec
+**Task 1 — Tenant Design:**
+- 3 tenants: `PayFast UK Production`, `PayFast US Production`, `PayFast Staging`
+- 2 API keys per tenant (active + backup)
+- Start with Scale plan ($19/mo) — 20k active series included
+- Upgrade to Enterprise if series count exceeds 20k
 
-    **Task 3 — Cardinality:**
-    - Current worst case: 50,000 × 30 × 5 × 2,000,000 × unique × 3 = **astronomically high**
-    - Remove: `merchant_id` (50k), `user_id` (2M), `request_id` (unique)
-    - Keep: `currency`, `payment_method`, `status`
-    - After cleanup: 30 × 5 × 3 = **450 series per metric** ✅
+**Task 2 — Collector Deployment:**
+- Agent Mode (DaemonSet) — 1 collector per node
+- Receivers: `otlp` (receives from Java javaagent), `hostmetrics` (node metrics)
+- Credentials: Kubernetes Secret → mounted as environment variables
+- Egress proxy: set `HTTPS_PROXY` env var in DaemonSet pod spec
+
+**Task 3 — Cardinality:**
+- Current worst case: 50,000 × 30 × 5 × 2,000,000 × unique × 3 = **astronomically high**
+- Remove: `merchant_id` (50k), `user_id` (2M), `request_id` (unique)
+- Keep: `currency`, `payment_method`, `status`
+- After cleanup: 30 × 5 × 3 = **450 series per metric** ✅
+
+</details>
 
 ---
 
 ## Key Takeaways
 
-!!! success "Session 3.3 Summary"
-    - Tenant design: **one tenant per environment per region** for isolation
-    - For Kubernetes: **DaemonSet (Agent Mode)** is almost always the right choice
-    - Cardinality review is essential before onboarding — one bad label can blow up storage
-    - Always remove: `user_id`, `request_id`, `trace_id`, `session_id` from metrics
-    - Keep: `environment`, `region`, `service`, `http_method`, `status_code` (bounded values)
+:::tip[Session 3.3 Summary]
+
+- Tenant design: **one tenant per environment per region** for isolation
+- For Kubernetes: **DaemonSet (Agent Mode)** is almost always the right choice
+- Cardinality review is essential before onboarding — one bad label can blow up storage
+- Always remove: `user_id`, `request_id`, `trace_id`, `session_id` from metrics
+- Keep: `environment`, `region`, `service`, `http_method`, `status_code` (bounded values)
+
+:::
 
 ---
 

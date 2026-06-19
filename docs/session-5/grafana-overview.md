@@ -102,8 +102,11 @@ datasources:
       httpHeaderValue1: <your-tenant-id>
 ```
 
-!!! info "No API Key in Local Dev"
-    In the local dev stack, Envoy is not in the path for Grafana queries — Grafana connects directly to xMetrics/xLogs/xTraces. In production, Grafana queries go through Envoy and require `Authorization: Bearer xag_...`.
+:::info[No API Key in Local Dev]
+
+In the local dev stack, Envoy is not in the path for Grafana queries — Grafana connects directly to xMetrics/xLogs/xTraces. In production, Grafana queries go through Envoy and require `Authorization: Bearer xag_...`.
+
+:::
 
 ---
 
@@ -195,12 +198,15 @@ Expected result: `"Data source successfully connected."`
 
 ## Key Takeaways
 
-!!! success "Session 5.1 Summary"
-    - Grafana is a **pure visualisation layer** — no data storage, no ingestion
-    - Each signal (metrics, logs, traces) requires its own datasource configuration
-    - `platform-metrics` = platform observability (for xScaler operators)
-    - `xMetrics/loki/tempo` = tenant data (for tenant users)
-    - Cross-signal correlation links traces → logs → metrics via `trace_id` and `service.name`
+:::tip[Session 5.1 Summary]
+
+- Grafana is a **pure visualisation layer** — no data storage, no ingestion
+- Each signal (metrics, logs, traces) requires its own datasource configuration
+- `platform-metrics` = platform observability (for xScaler operators)
+- `xMetrics/loki/tempo` = tenant data (for tenant users)
+- Cross-signal correlation links traces → logs → metrics via `trace_id` and `service.name`
+
+:::
 
 ---
 

@@ -33,9 +33,9 @@
 
 1. [Dashboard Creation](dashboard-creation.md) — panels, variables, golden signals
 2. [APM](apm.md) — distributed traces, service maps, RED metrics
-3. [Alerting](alerting.md) — rules, channels, testing
+3. [Alerting](alerting.mdx) — rules, channels, testing
 
 ---
 
-*← Previous: [Datasource Configuration](../session-5/datasource-configuration.md)*  
+*← Previous: [Datasource Configuration](../session-5/datasource-configuration.mdx)*  
 *Next: [Dashboard Creation →](dashboard-creation.md)*

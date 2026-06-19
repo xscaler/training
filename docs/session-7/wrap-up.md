@@ -8,46 +8,46 @@ Congratulations on completing the xScaler Observability Platform Training! Over 
 
 ## What You Learned
 
-=== "Day 1"
+### Day 1
 
-    **Session 1 — Platform Introduction**
-    - xScaler two-tier architecture: control plane + edge data plane
-    - Component roles: portal-api, agent-api, Envoy, proxy-auth, xMetrics, xLogs, xTraces
-    - Authentication: Cognito → JWT (30-min TTL) for users, SHA-256 API keys for collectors
-    - Multi-tenant isolation via `X-Scope-OrgID` header
+**Session 1 — Platform Introduction**
+- xScaler two-tier architecture: control plane + edge data plane
+- Component roles: portal-api, agent-api, Envoy, proxy-auth, xMetrics, xLogs, xTraces
+- Authentication: Cognito → JWT (30-min TTL) for users, SHA-256 API keys for collectors
+- Multi-tenant isolation via `X-Scope-OrgID` header
 
-    **Session 2 — OpenTelemetry Fundamentals**
-    - OTLP protocol, OTel Collector pipeline: receivers → processors → exporters
-    - Agent Mode vs Gateway Mode deployment patterns
-    - OpAMP: remote config push for OTel agents
-    - memory_limiter and batch processor best practices
+**Session 2 — OpenTelemetry Fundamentals**
+- OTLP protocol, OTel Collector pipeline: receivers → processors → exporters
+- Agent Mode vs Gateway Mode deployment patterns
+- OpAMP: remote config push for OTel agents
+- memory_limiter and batch processor best practices
 
-    **Session 3 — Data Collection Architecture**
-    - Prometheus scrape (pull) vs OTLP push collection models
-    - Envoy ext_authz pattern and the four-listener architecture
-    - Cardinality management: what to avoid in metric labels
+**Session 3 — Data Collection Architecture**
+- Prometheus scrape (pull) vs OTLP push collection models
+- Envoy ext_authz pattern and the four-listener architecture
+- Cardinality management: what to avoid in metric labels
 
-=== "Day 2"
+### Day 2
 
-    **Session 4 — Tenant Setup and Agent Deployment**
-    - Tenant lifecycle: create, key management, usage monitoring
-    - OpAMP enrollment: xse_ token → xag_ per-agent key exchange
-    - Config templates with `${secret:NAME}` KMS-encrypted references
-    - Label-selector assignments and priority-based config routing
+**Session 4 — Tenant Setup and Agent Deployment**
+- Tenant lifecycle: create, key management, usage monitoring
+- OpAMP enrollment: xse_ token → xag_ per-agent key exchange
+- Config templates with `` ${secret:NAME} `` KMS-encrypted references
+- Label-selector assignments and priority-based config routing
 
-    **Session 5 — Grafana Integration**
-    - Grafana's role: pure visualisation, not storage
-    - Three datasources: Prometheus (xMetrics), xLogs, xTraces
-    - Cross-signal correlation: trace → log → metric
-    - Managed Grafana vs self-managed options
+**Session 5 — Grafana Integration**
+- Grafana's role: pure visualisation, not storage
+- Three datasources: Prometheus (xMetrics), xLogs, xTraces
+- Cross-signal correlation: trace → log → metric
+- Managed Grafana vs self-managed options
 
-    **Session 6 — Dashboards, APM and Alerting**
-    - Four golden signals dashboards: latency, traffic, errors, saturation
-    - Distributed tracing with TraceQL and the service map
-    - Alert rules, contact points, notification policies, silences
+**Session 6 — Dashboards, APM and Alerting**
+- Four golden signals dashboards: latency, traffic, errors, saturation
+- Distributed tracing with TraceQL and the service map
+- Alert rules, contact points, notification policies, silences
 
-    **Session 7 — Hands-On Lab**
-    - Complete end-to-end workflow: tenant → API key → push data → dashboard → alert
+**Session 7 — Hands-On Lab**
+- Complete end-to-end workflow: tenant → API key → push data → dashboard → alert
 
 ---
 
@@ -63,7 +63,7 @@ Congratulations on completing the xScaler Observability Platform Training! Over 
 | **OpAMP** | WebSocket protocol for pushing OTel config to agents |
 | **xse_ token** | Fleet enrollment token — shared among all agents in a group |
 | **xag_ key** | Per-agent API key — created during enrollment, unique to each agent |
-| **${secret:NAME}** | Config template placeholder resolved via AWS KMS at delivery time |
+| **`${secret:NAME}`** | Config template placeholder resolved via AWS KMS at delivery time |
 | **NOTIFY/LISTEN** | PostgreSQL mechanism for near-real-time config push to agent-api |
 | **xMetrics** | Multi-tenant metrics: `multitenancy_enabled: true`, port 9009 |
 | **xLogs** | Multi-tenant logs: `auth_enabled: true`, HTTP 3100, gRPC 9095 |
@@ -133,8 +133,11 @@ Please complete the training feedback form provided by your instructor. Your fee
 
 ---
 
-!!! success "You're Ready!"
-    You now have the knowledge to deploy, configure, and operate the xScaler Observability Platform in production. Start with a single team's services, prove the value, and expand from there. The platform scales from a single DaemonSet to thousands of agents across multiple regions.
+:::tip[You're Ready!]
+
+You now have the knowledge to deploy, configure, and operate the xScaler Observability Platform in production. Start with a single team's services, prove the value, and expand from there. The platform scales from a single DaemonSet to thousands of agents across multiple regions.
+
+:::
 
 ---
 

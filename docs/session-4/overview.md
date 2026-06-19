@@ -32,12 +32,12 @@
 
 ## Session Pages
 
-1. [Tenant Administration](tenant-administration.md) — create, list, manage tenants
-2. [Agent Deployment](agent-deployment.md) — install supervisor, enrollment tokens
+1. [Tenant Administration](tenant-administration.mdx) — create, list, manage tenants
+2. [Agent Deployment](agent-deployment.mdx) — install supervisor, enrollment tokens
 3. [Agent Registration](agent-registration.md) — OpAMP flow, database tracking
 4. [Configuration Management](configuration-management.md) — templates, secrets, label selectors
 
 ---
 
 *← Previous: [Customer Workshop](../session-3/customer-workshop.md)*  
-*Next: [Tenant Administration →](tenant-administration.md)*
+*Next: [Tenant Administration →](tenant-administration.mdx)*

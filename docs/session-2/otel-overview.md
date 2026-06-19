@@ -253,12 +253,15 @@ You should see `1` for each edge component that the collector is successfully sc
 
 ## Key Takeaways
 
-!!! success "Session 2.1 Summary"
-    - OpenTelemetry is the **CNCF standard** for vendor-neutral telemetry instrumentation
-    - Three signals: **traces** (request trees), **metrics** (numeric time series), **logs** (text events)
-    - **OTLP** is the wire protocol — available over gRPC (:4317) or HTTP (:4318)
-    - The **OTel Collector** is the central pipeline: receive → process → export
-    - xScaler uses OTel both for **platform self-monitoring** and for **customer telemetry collection**
+:::tip[Session 2.1 Summary]
+
+- OpenTelemetry is the **CNCF standard** for vendor-neutral telemetry instrumentation
+- Three signals: **traces** (request trees), **metrics** (numeric time series), **logs** (text events)
+- **OTLP** is the wire protocol — available over gRPC (:4317) or HTTP (:4318)
+- The **OTel Collector** is the central pipeline: receive → process → export
+- xScaler uses OTel both for **platform self-monitoring** and for **customer telemetry collection**
+
+:::
 
 ---
 

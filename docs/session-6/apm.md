@@ -176,15 +176,18 @@ These span metrics are available if you enable the **spanmetrics connector** in 
 
 ## Key Takeaways
 
-!!! success "Session 6.2 Summary"
-    - A **trace** = a tree of spans representing one request's journey through all services
-    - **Wide spans** = slow; **red spans** = errors — these are investigation starting points
-    - **TraceQL** queries xTraces: `{resource.service.name = "x" && duration > 500ms}`
-    - The **service map** visualises call graphs built from trace data
-    - **Trace → Logs** correlation: clicking a span reveals xLogs logs filtered by `trace_id`
-    - **RED metrics** (Rate, Errors, Duration) from traces provide service-level SLO visibility
+:::tip[Session 6.2 Summary]
+
+- A **trace** = a tree of spans representing one request's journey through all services
+- **Wide spans** = slow; **red spans** = errors — these are investigation starting points
+- **TraceQL** queries xTraces: `{resource.service.name = "x" && duration > 500ms}`
+- The **service map** visualises call graphs built from trace data
+- **Trace → Logs** correlation: clicking a span reveals xLogs logs filtered by `trace_id`
+- **RED metrics** (Rate, Errors, Duration) from traces provide service-level SLO visibility
+
+:::
 
 ---
 
 *← Previous: [Dashboard Creation](dashboard-creation.md)*  
-*Next: [Alerting →](alerting.md)*
+*Next: [Alerting →](alerting.mdx)*

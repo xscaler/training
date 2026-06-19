@@ -264,12 +264,15 @@ Answer these questions:
 
 ## Key Takeaways
 
-!!! success "Session 2.3 Summary"
-    - **Direct SDK** — simplest, no buffering, suits serverless
-    - **Agent Mode** — DaemonSet per node, local buffering, host metrics, suits Kubernetes
-    - **Gateway Mode** — centralised Deployment, cross-service aggregation, centralised routing
-    - **Combined** — agents collect locally, gateway aggregates before export — best for 20+ nodes
-    - xScaler's edge OTel collector is a **platform agent** (scrapes xMetrics, Envoy, proxy-auth)
+:::tip[Session 2.3 Summary]
+
+- **Direct SDK** — simplest, no buffering, suits serverless
+- **Agent Mode** — DaemonSet per node, local buffering, host metrics, suits Kubernetes
+- **Gateway Mode** — centralised Deployment, cross-service aggregation, centralised routing
+- **Combined** — agents collect locally, gateway aggregates before export — best for 20+ nodes
+- xScaler's edge OTel collector is a **platform agent** (scrapes xMetrics, Envoy, proxy-auth)
+
+:::
 
 ---
 

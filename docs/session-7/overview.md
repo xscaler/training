@@ -30,7 +30,7 @@
 ## Session Pages
 
 1. [Lab Guide](lab-guide.md) — complete end-to-end lab exercise
-2. [Wrap-Up](wrap-up.md) — training summary, next steps, resources
+2. [Wrap-Up](wrap-up.mdx) — training summary, next steps, resources
 
 ---
 
@@ -51,5 +51,5 @@ graph LR
 
 ---
 
-*← Previous: [Alerting](../session-6/alerting.md)*  
+*← Previous: [Alerting](../session-6/alerting.mdx)*  
 *Next: [Lab Guide →](lab-guide.md)*

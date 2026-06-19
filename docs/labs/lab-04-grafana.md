@@ -79,11 +79,15 @@ Expected: Recent traces from loadgen.
 
 ## Troubleshooting
 
-??? failure "xTraces shows 'no traces'"
-    ```bash
-    docker compose logs loadgen --tail=20
-    docker compose ps loadgen
-    ```
+<details>
+<summary><strong>xTraces shows 'no traces'</strong></summary>
+
+```bash
+docker compose logs loadgen --tail=20
+docker compose ps loadgen
+```
+
+</details>
 
 ---
 

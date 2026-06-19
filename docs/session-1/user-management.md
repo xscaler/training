@@ -115,8 +115,11 @@ VALUES (
 );
 ```
 
-!!! warning "Key Recovery"
-    API keys are shown **once** at creation time. If you lose the key, you must create a new one and revoke the old one. xScaler cannot recover the original key value.
+:::warning[Key Recovery]
+
+API keys are shown **once** at creation time. If you lose the key, you must create a new one and revoke the old one. xScaler cannot recover the original key value.
+
+:::
 
 ### Authentication Flow (API Key)
 
@@ -249,39 +252,54 @@ echo "SAVE THIS KEY — it will not be shown again!"
 
 ## Troubleshooting
 
-??? failure "401 Unauthorized on portal-api requests"
-    JWT tokens expire after 30 minutes. Re-authenticate:
-    ```bash
-    export JWT_TOKEN=$(curl -s -X POST $PORTAL_BASE/auth/login \
-      -H "Content-Type: application/json" \
-      -d '{"email":"alice@example.com","password":"Training123!"}' | jq -r '.token')
-    ```
+<details>
+<summary><strong>401 Unauthorized on portal-api requests</strong></summary>
 
-??? failure "403 Forbidden when inviting members"
-    Only `owner` and `admin` roles can invite members. Verify your role:
-    ```bash
-    curl -s $PORTAL_BASE/org/members \
-      -H "Authorization: Bearer $JWT_TOKEN" | jq '.[] | select(.email=="alice@example.com") | .role'
-    ```
+JWT tokens expire after 30 minutes. Re-authenticate:
+```bash
+export JWT_TOKEN=$(curl -s -X POST $PORTAL_BASE/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"alice@example.com","password":"Training123!"}' | jq -r '.token')
+```
 
-??? failure "API key creation returns 404"
-    Verify the tenant ID is correct and belongs to your organisation:
-    ```bash
-    curl -s $PORTAL_BASE/tenants \
-      -H "Authorization: Bearer $JWT_TOKEN" | jq '.[].id'
-    ```
+</details>
+
+<details>
+<summary><strong>403 Forbidden when inviting members</strong></summary>
+
+Only `owner` and `admin` roles can invite members. Verify your role:
+```bash
+curl -s $PORTAL_BASE/org/members \
+  -H "Authorization: Bearer $JWT_TOKEN" | jq '.[] | select(.email=="alice@example.com") | .role'
+```
+
+</details>
+
+<details>
+<summary><strong>API key creation returns 404</strong></summary>
+
+Verify the tenant ID is correct and belongs to your organisation:
+```bash
+curl -s $PORTAL_BASE/tenants \
+  -H "Authorization: Bearer $JWT_TOKEN" | jq '.[].id'
+```
+
+</details>
 
 ---
 
 ## Key Takeaways
 
-!!! success "Session 1.2 Summary"
-    - Human users authenticate via AWS Cognito → exchange for xScaler JWT (HS256, 30-min TTL)
-    - JWTs are stored in `HttpOnly` cookies — not accessible to JavaScript
-    - OTel collectors authenticate with `xag_` API keys — stored as SHA-256 hashes
-    - API keys are shown **once** at creation — save them immediately
-    - Organisation → Tenants → API Keys is the three-level hierarchy
-    - Four roles: `owner` > `admin` > `member` > `viewer`
+:::tip[Session 1.2 Summary]
+
+- Human users authenticate via AWS Cognito → exchange for xScaler JWT (HS256, 30-min TTL)
+- JWTs are stored in `HttpOnly` cookies — not accessible to JavaScript
+- OTel collectors authenticate with `xag_` API keys — stored as SHA-256 hashes
+- API keys are shown **once** at creation — save them immediately
+- Organisation → Tenants → API Keys is the three-level hierarchy
+- Four roles: `owner` > `admin` > `member` > `viewer`
+
+:::
 
 ---
 

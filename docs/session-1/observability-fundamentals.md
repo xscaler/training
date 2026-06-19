@@ -262,33 +262,48 @@ This returns `1` for every scrape target that is reachable.
 
 ## Troubleshooting
 
-??? failure "Datasource shows 'Data source connected but no labels found'"
-    The load generator may not be running. Check:
-    ```bash
-    docker compose ps loadgen
-    docker compose logs loadgen --tail=20
-    ```
+<details>
+<summary><strong>Datasource shows 'Data source connected but no labels found'</strong></summary>
 
-??? failure "PromQL query returns 'No data'"
-    Wait 30 seconds — scrape interval is 15s and there may not be enough data points yet.
-    Also verify the correct datasource is selected (`xMetrics` not `platform-metrics`).
+The load generator may not be running. Check:
+```bash
+docker compose ps loadgen
+docker compose logs loadgen --tail=20
+```
 
-??? failure "xLogs datasource connection error"
-    ```bash
-    curl -s https://<edge>.l.xscalerlabs.com/ready
-    docker compose logs xLogs --tail=20
-    ```
+</details>
+
+<details>
+<summary><strong>PromQL query returns 'No data'</strong></summary>
+
+Wait 30 seconds — scrape interval is 15s and there may not be enough data points yet.
+Also verify the correct datasource is selected (`xMetrics` not `platform-metrics`).
+
+</details>
+
+<details>
+<summary><strong>xLogs datasource connection error</strong></summary>
+
+```bash
+curl -s https://<edge>.l.xscalerlabs.com/ready
+docker compose logs xLogs --tail=20
+```
+
+</details>
 
 ---
 
 ## Key Takeaways
 
-!!! success "Session 1.3 Summary"
-    - Three observability signals: **metrics** (what), **logs** (why), **traces** (where)
-    - xScaler uses three separate backends: **xMetrics** (metrics), **xLogs** (logs), **xTraces** (traces)
-    - **Grafana** is the single visualisation layer connecting all three backends
-    - The **four golden signals** — latency, traffic, errors, saturation — are the foundation of SRE alerting
-    - Use **PromQL** for metrics, **LogQL** for logs, **TraceQL** for traces
+:::tip[Session 1.3 Summary]
+
+- Three observability signals: **metrics** (what), **logs** (why), **traces** (where)
+- xScaler uses three separate backends: **xMetrics** (metrics), **xLogs** (logs), **xTraces** (traces)
+- **Grafana** is the single visualisation layer connecting all three backends
+- The **four golden signals** — latency, traffic, errors, saturation — are the foundation of SRE alerting
+- Use **PromQL** for metrics, **LogQL** for logs, **TraceQL** for traces
+
+:::
 
 ---
 

@@ -215,12 +215,15 @@ sum(rate(http_requests_total{status=~"5.."}[$__rate_interval]))
 
 ## Key Takeaways
 
-!!! success "Session 6.1 Summary"
-    - Structure dashboards around the **four golden signals**: latency, traffic, errors, saturation
-    - Use **variables** to make dashboards reusable across services (`$service`, `$interval`)
-    - `histogram_quantile()` requires a `rate()` inside — always use `$__rate_interval` for dynamic intervals
-    - Combine PromQL and LogQL in the same dashboard for a complete service view
-    - Keep dashboards **organised by rows** — SLO status → Traffic → Errors → Latency → Saturation
+:::tip[Session 6.1 Summary]
+
+- Structure dashboards around the **four golden signals**: latency, traffic, errors, saturation
+- Use **variables** to make dashboards reusable across services (`$service`, `$interval`)
+- `histogram_quantile()` requires a `rate()` inside — always use `$__rate_interval` for dynamic intervals
+- Combine PromQL and LogQL in the same dashboard for a complete service view
+- Keep dashboards **organised by rows** — SLO status → Traffic → Errors → Latency → Saturation
+
+:::
 
 ---
 

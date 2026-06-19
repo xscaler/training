@@ -1,3 +1,6 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Alerting
 
 ## Learning Objectives
@@ -106,82 +109,92 @@ Labels: severity=warning
 
 ## Creating an Alert Rule in Grafana UI
 
-=== "Step by Step"
+<Tabs>
+  <TabItem value="step-by-step" label="Step by Step">
 
-    1. Navigate to **Alerting → Alert rules → New alert rule**
 
-    <div class="screenshot-placeholder">
-    [Screenshot: Grafana new alert rule page with query editor, condition section, and labels fields]
-    </div>
+1. Navigate to **Alerting → Alert rules → New alert rule**
 
-    2. **Section 1 — Set an alert rule name**
-       - Name: `Workshop: High Error Rate`
-       - Folder: Create a new folder `Workshop Alerts`
-       - Group: `golden-signals`
+<div class="screenshot-placeholder">
+[Screenshot: Grafana new alert rule page with query editor, condition section, and labels fields]
+</div>
 
-    3. **Section 2 — Set a query and alert condition**
-       - Datasource: `xScaler Metrics` (or `xMetrics`)
-       - Query A:
-       ```promql
-       sum(rate(http_requests_total{status=~"5.."}[5m]))
-       / sum(rate(http_requests_total[5m])) * 100
-       ```
-       - Reduce: **Last** (pick the most recent value)
-       - Threshold: **IS ABOVE** `1`
+2. **Section 1 — Set an alert rule name**
+   - Name: `Workshop: High Error Rate`
+   - Folder: Create a new folder `Workshop Alerts`
+   - Group: `golden-signals`
 
-    4. **Section 3 — Alert evaluation behavior**
-       - Evaluate every: `1m`
-       - For: `2m`
+3. **Section 2 — Set a query and alert condition**
+   - Datasource: `xScaler Metrics` (or `xMetrics`)
+   - Query A:
+   ```promql
+   sum(rate(http_requests_total{status=~"5.."}[5m]))
+   / sum(rate(http_requests_total[5m])) * 100
+   ```
+   - Reduce: **Last** (pick the most recent value)
+   - Threshold: **IS ABOVE** `1`
 
-    5. **Section 4 — Configure labels and notifications**
-       - Add label: `severity=warning`
-       - Add label: `team=platform`
+4. **Section 3 — Alert evaluation behavior**
+   - Evaluate every: `1m`
+   - For: `2m`
 
-    6. Click **Save rule and exit**
+5. **Section 4 — Configure labels and notifications**
+   - Add label: `severity=warning`
+   - Add label: `team=platform`
 
-=== "Alert Rule YAML"
+6. Click **Save rule and exit**
 
-    For GitOps-managed alerting, use Grafana's provisioning format:
+  </TabItem>
+</Tabs>
 
-    ```yaml
-    # grafana/provisioning/alerting/workshop-alerts.yaml
-    apiVersion: 1
-    groups:
-      - orgId: 1
-        name: golden-signals
-        folder: Workshop Alerts
-        interval: 1m
-        rules:
-          - uid: workshop-error-rate
-            title: "Workshop: High Error Rate"
-            condition: C
-            data:
-              - refId: A
-                datasourceUid: xscaler-metrics
-                model:
-                  expr: |
-                    sum(rate(http_requests_total{status=~"5.."}[5m]))
-                    / sum(rate(http_requests_total[5m])) * 100
-                  instant: false
-                  range: true
-              - refId: B
-                datasourceUid: "-100"
-                model:
-                  conditions:
-                    - evaluator: {params: [0], type: gt}
-                      operator: {type: and}
-                      query: {params: [A]}
-                      reducer: {type: last}
-                      type: query
-                  type: classic_conditions
-            for: 2m
-            labels:
-              severity: warning
-              team: platform
-            annotations:
-              description: "Error rate is {{ $value | humanize }}%"
-              summary: "High error rate detected"
-    ```
+<Tabs>
+  <TabItem value="alert-rule-yaml" label="Alert Rule YAML">
+
+
+For GitOps-managed alerting, use Grafana's provisioning format:
+
+```yaml
+# grafana/provisioning/alerting/workshop-alerts.yaml
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: golden-signals
+    folder: Workshop Alerts
+    interval: 1m
+    rules:
+      - uid: workshop-error-rate
+        title: "Workshop: High Error Rate"
+        condition: C
+        data:
+          - refId: A
+            datasourceUid: xscaler-metrics
+            model:
+              expr: |
+                sum(rate(http_requests_total{status=~"5.."}[5m]))
+                / sum(rate(http_requests_total[5m])) * 100
+              instant: false
+              range: true
+          - refId: B
+            datasourceUid: "-100"
+            model:
+              conditions:
+                - evaluator: {params: [0], type: gt}
+                  operator: {type: and}
+                  query: {params: [A]}
+                  reducer: {type: last}
+                  type: query
+              type: classic_conditions
+        for: 2m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          description: "Error rate is {{ $value | humanize }}%"
+          summary: "High error rate detected"
+```
+
+  </TabItem>
+</Tabs>
 
 ---
 
@@ -307,13 +320,16 @@ curl -s -X POST "https://<slug>.g.xscalerlabs.com/api/v1/provisioning/alert-rule
 
 ## Key Takeaways
 
-!!! success "Session 6.3 Summary"
-    - Alert states: **Normal → Pending → Firing** — the `For` period prevents flapping
-    - Four golden signal alerts: error rate > 1%, p99 > 500ms, traffic too low, CPU > 85%
-    - **Contact points** define WHERE to send (Slack, email, PagerDuty)
-    - **Notification policies** define WHICH alerts go WHERE based on labels
-    - **Silences** temporarily mute alerts during maintenance windows
-    - Use `severity` labels to distinguish `warning` (page someone) from `info` (log only)
+:::tip[Session 6.3 Summary]
+
+- Alert states: **Normal → Pending → Firing** — the `For` period prevents flapping
+- Four golden signal alerts: error rate > 1%, p99 > 500ms, traffic too low, CPU > 85%
+- **Contact points** define WHERE to send (Slack, email, PagerDuty)
+- **Notification policies** define WHICH alerts go WHERE based on labels
+- **Silences** temporarily mute alerts during maintenance windows
+- Use `severity` labels to distinguish `warning` (page someone) from `info` (log only)
+
+:::
 
 ---
 

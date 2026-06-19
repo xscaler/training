@@ -246,12 +246,15 @@ curl -s -X POST "https://<edge>.m.xscalerlabs.com/api/v1/push" \
 
 ## Key Takeaways
 
-!!! success "Session 3.1 Summary"
-    - **Pull model** (Prometheus scrape): Collector polls `/metrics` → good for infrastructure components
-    - **Push model** (OTLP): Apps send to collector → good for application-level telemetry
-    - **xMetrics** ingests via Prometheus remote_write; tenant isolation via `X-Scope-OrgID`
-    - **Cardinality** is the primary cost driver — never add user_id, request_id, or trace_id to metrics
-    - `max_global_series_per_user: 10,000,000` is the xMetrics limit per tenant (local dev config)
+:::tip[Session 3.1 Summary]
+
+- **Pull model** (Prometheus scrape): Collector polls `/metrics` → good for infrastructure components
+- **Push model** (OTLP): Apps send to collector → good for application-level telemetry
+- **xMetrics** ingests via Prometheus remote_write; tenant isolation via `X-Scope-OrgID`
+- **Cardinality** is the primary cost driver — never add user_id, request_id, or trace_id to metrics
+- `max_global_series_per_user: 10,000,000` is the xMetrics limit per tenant (local dev config)
+
+:::
 
 ---
 

@@ -97,8 +97,11 @@ http_filters:
       include_peer_certificate: false
 ```
 
-!!! warning "Fail-Closed Security"
-    `failure_mode_allow: false` means if `proxy-auth` is unavailable or times out, ALL requests are **denied**. This is intentional — availability of the auth service is critical to the security model.
+:::warning[Fail-Closed Security]
+
+`failure_mode_allow: false` means if `proxy-auth` is unavailable or times out, ALL requests are **denied**. This is intentional — availability of the auth service is critical to the security model.
+
+:::
 
 ---
 
@@ -213,8 +216,11 @@ Routes:
 
 ### Exercise 3.3 — Inspect Envoy Admin Interface
 
-!!! note "Platform Operator Exercise"
-    The Envoy admin interface is accessible only to platform operators via cluster access (kubectl port-forward or equivalent). Ask your instructor if a forwarded port has been set up for this exercise.
+:::note[Platform Operator Exercise]
+
+The Envoy admin interface is accessible only to platform operators via cluster access (kubectl port-forward or equivalent). Ask your instructor if a forwarded port has been set up for this exercise.
+
+:::
 
 ```bash
 # Envoy admin stats (requires cluster access)
@@ -264,13 +270,16 @@ curl -v https://<edge>.m.xscalerlabs.com/api/v1/push \
 
 ## Key Takeaways
 
-!!! success "Session 3.2 Summary"
-    - Envoy runs **four listeners**: metrics (8080), logs (8181), traces HTTP (8282), traces gRPC (4317)
-    - Every request passes through **ext_authz** → `proxy-auth` before reaching any backend
-    - `failure_mode_allow: false` means auth service outage = total denial (fail-closed)
-    - **Lua filter** blocks multi-tenant injection attacks (comma in X-Scope-OrgID → 400)
-    - `proxy-auth` does SHA-256 hash lookup, rate limit check, then injects X-Scope-OrgID
-    - ext_authz timeout is **250ms** — keep key lookup fast
+:::tip[Session 3.2 Summary]
+
+- Envoy runs **four listeners**: metrics (8080), logs (8181), traces HTTP (8282), traces gRPC (4317)
+- Every request passes through **ext_authz** → `proxy-auth` before reaching any backend
+- `failure_mode_allow: false` means auth service outage = total denial (fail-closed)
+- **Lua filter** blocks multi-tenant injection attacks (comma in X-Scope-OrgID → 400)
+- `proxy-auth` does SHA-256 hash lookup, rate limit check, then injects X-Scope-OrgID
+- ext_authz timeout is **250ms** — keep key lookup fast
+
+:::
 
 ---
 

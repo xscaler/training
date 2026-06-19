@@ -1,9 +1,12 @@
 # OpAMP Agent Deployment Reference
 
-!!! info "No Ansible in xScaler"
-    The xScaler repository does not contain Ansible playbooks. Agent configuration is managed via **OpAMP** through `agent-api`, not through configuration management tools like Ansible or Chef.
+:::info[No Ansible in xScaler]
 
-    This section provides equivalent Kubernetes and systemd deployment patterns.
+The xScaler repository does not contain Ansible playbooks. Agent configuration is managed via **OpAMP** through `agent-api`, not through configuration management tools like Ansible or Chef.
+
+This section provides equivalent Kubernetes and systemd deployment patterns.
+
+:::
 
 ## Kubernetes DaemonSet — OpAMP Supervisor
 

@@ -282,13 +282,16 @@ docker compose exec postgres psql -U xscaler -d xscaler -c "
 
 ## Key Takeaways
 
-!!! success "Session 4.4 Summary"
-    - Config templates contain `${secret:NAME}` placeholders resolved at delivery time via AWS KMS
-    - Secrets are stored as KMS envelope-encrypted ciphertext — never as plaintext in the DB
-    - **Label selectors** determine which agents receive which template — `{}` matches all
-    - **Priority** resolves conflicts when multiple assignments match the same agent
-    - Rollback = create a new assignment at higher priority pointing to the previous revision
-    - Config pushes are triggered within seconds via PostgreSQL **NOTIFY/LISTEN**
+:::tip[Session 4.4 Summary]
+
+- Config templates contain `${secret:NAME}` placeholders resolved at delivery time via AWS KMS
+- Secrets are stored as KMS envelope-encrypted ciphertext — never as plaintext in the DB
+- **Label selectors** determine which agents receive which template — `{}` matches all
+- **Priority** resolves conflicts when multiple assignments match the same agent
+- Rollback = create a new assignment at higher priority pointing to the previous revision
+- Config pushes are triggered within seconds via PostgreSQL **NOTIFY/LISTEN**
+
+:::
 
 ---
 

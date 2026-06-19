@@ -1,3 +1,6 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Agent Deployment
 
 ## Learning Objectives
@@ -67,8 +70,11 @@ Expected response:
 }
 ```
 
-!!! warning "Save the Token"
-    Like API keys, the enrollment token value is shown once. Save it to your secret manager immediately.
+:::warning[Save the Token]
+
+Like API keys, the enrollment token value is shown once. Save it to your secret manager immediately.
+
+:::
 
 For local dev, the seed data pre-creates a token:
 ```
@@ -79,45 +85,60 @@ xse_<enrollment-token>
 
 ## Installing the OTel Collector
 
-=== "Linux (binary)"
+<Tabs>
+  <TabItem value="linux-binary" label="Linux (binary)">
 
-    ```bash
-    # Download otelcol-contrib (check releases.opentelemetry.io for latest)
-    OTEL_VERSION="0.104.0"
-    curl -Lo /tmp/otelcol-contrib.tar.gz \
-      "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v${OTEL_VERSION}/otelcol-contrib_${OTEL_VERSION}_linux_amd64.tar.gz"
 
-    tar -xzf /tmp/otelcol-contrib.tar.gz -C /tmp/
-    sudo mv /tmp/otelcol-contrib /usr/local/bin/
-    sudo chmod +x /usr/local/bin/otelcol-contrib
+```bash
+# Download otelcol-contrib (check releases.opentelemetry.io for latest)
+OTEL_VERSION="0.104.0"
+curl -Lo /tmp/otelcol-contrib.tar.gz \
+  "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v${OTEL_VERSION}/otelcol-contrib_${OTEL_VERSION}_linux_amd64.tar.gz"
 
-    # Verify
-    otelcol-contrib --version
-    ```
+tar -xzf /tmp/otelcol-contrib.tar.gz -C /tmp/
+sudo mv /tmp/otelcol-contrib /usr/local/bin/
+sudo chmod +x /usr/local/bin/otelcol-contrib
 
-=== "Docker"
+# Verify
+otelcol-contrib --version
+```
 
-    ```bash
-    # Pull the OTel Collector Contrib image
-    docker pull otel/opentelemetry-collector-contrib:0.104.0
+  </TabItem>
+</Tabs>
 
-    # Run with a config file
-    docker run --rm \
-      -v /path/to/config.yaml:/etc/otelcol/config.yaml \
-      otel/opentelemetry-collector-contrib:0.104.0 \
-      --config /etc/otelcol/config.yaml
-    ```
+<Tabs>
+  <TabItem value="docker" label="Docker">
 
-=== "Kubernetes"
 
-    ```yaml
-    # Defined in the DaemonSet manifest
-    # See Appendix: Kubernetes DaemonSet manifest
-    containers:
-      - name: otel-collector
-        image: otel/opentelemetry-collector-contrib:0.104.0
-        args: ["--config=/etc/otelcol/config.yaml"]
-    ```
+```bash
+# Pull the OTel Collector Contrib image
+docker pull otel/opentelemetry-collector-contrib:0.104.0
+
+# Run with a config file
+docker run --rm \
+  -v /path/to/config.yaml:/etc/otelcol/config.yaml \
+  otel/opentelemetry-collector-contrib:0.104.0 \
+  --config /etc/otelcol/config.yaml
+```
+
+  </TabItem>
+</Tabs>
+
+<Tabs>
+  <TabItem value="kubernetes" label="Kubernetes">
+
+
+```yaml
+# Defined in the DaemonSet manifest
+# See Appendix: Kubernetes DaemonSet manifest
+containers:
+  - name: otel-collector
+    image: otel/opentelemetry-collector-contrib:0.104.0
+    args: ["--config=/etc/otelcol/config.yaml"]
+```
+
+  </TabItem>
+</Tabs>
 
 ---
 
@@ -300,14 +321,17 @@ docker compose exec postgres psql -U xscaler -d xscaler \
 
 ## Key Takeaways
 
-!!! success "Session 4.2 Summary"
-    - Two components: `otelcol-contrib` (pipeline) + `otelcol-supervisor` (OpAMP manager)
-    - Enrollment tokens (`xse_`) are **fleet credentials** — shared among all agents in a group
-    - Per-agent keys (`xag_`) are created during enrollment — unique to each agent instance
-    - Supervisor labels (from `non_identifying_attributes`) are used for config template matching
-    - Agent storage directory persists across restarts — supervisor remembers its agent key
+:::tip[Session 4.2 Summary]
+
+- Two components: `otelcol-contrib` (pipeline) + `otelcol-supervisor` (OpAMP manager)
+- Enrollment tokens (`xse_`) are **fleet credentials** — shared among all agents in a group
+- Per-agent keys (`xag_`) are created during enrollment — unique to each agent instance
+- Supervisor labels (from `non_identifying_attributes`) are used for config template matching
+- Agent storage directory persists across restarts — supervisor remembers its agent key
+
+:::
 
 ---
 
-*← Previous: [Tenant Administration](tenant-administration.md)*  
+*← Previous: [Tenant Administration](tenant-administration.mdx)*  
 *Next: [Agent Registration →](agent-registration.md)*

@@ -375,39 +375,55 @@ curl -s "https://<edge>.t.xscalerlabs.com/api/traces/$TRACE_ID" \
 
 ## Troubleshooting
 
-??? failure "Metrics push returns 401"
-    Re-export the API key:
-    ```bash
-    # Check if the key is still valid
-    curl -v https://<edge>.m.xscalerlabs.com/api/v1/query \
-      -H "Authorization: Bearer $API_KEY" \
-      --data-urlencode 'query=up' 2>&1 | grep "< HTTP"
-    ```
+<details>
+<summary><strong>Metrics push returns 401</strong></summary>
 
-??? failure "xLogs push returns 400"
-    The timestamp must be in nanoseconds. Check format:
-    ```bash
-    # Correct: 19-digit nanoseconds
-    date +%s%N  # macOS: may need gdate +%s%N
-    ```
-    On macOS, install GNU date: `brew install coreutils` then use `gdate`.
+Re-export the API key:
+```bash
+# Check if the key is still valid
+curl -v https://<edge>.m.xscalerlabs.com/api/v1/query \
+  -H "Authorization: Bearer $API_KEY" \
+  --data-urlencode 'query=up' 2>&1 | grep "< HTTP"
+```
 
-??? failure "Trace not found in xTraces"
-    Trace ID must be exactly 32 hex characters (16 bytes). Verify:
-    ```bash
-    echo -n "$TRACE_ID" | wc -c  # Should output 32
-    ```
+</details>
 
-??? failure "Dashboard panels show 'No data'"
-    Verify the tenant ID is correct in the datasource header. The local dev datasources use `<your-tenant-id>` not your lab tenant.
-    For local dev, query directly without Envoy routing:
-    ```bash
-    curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/query" \
-      -H "X-Scope-OrgID: $TENANT_ID" \
-      --data-urlencode 'query=lab7_requests_total' | jq .
-    ```
+<details>
+<summary><strong>xLogs push returns 400</strong></summary>
+
+The timestamp must be in nanoseconds. Check format:
+```bash
+# Correct: 19-digit nanoseconds
+date +%s%N  # macOS: may need gdate +%s%N
+```
+On macOS, install GNU date: `brew install coreutils` then use `gdate`.
+
+</details>
+
+<details>
+<summary><strong>Trace not found in xTraces</strong></summary>
+
+Trace ID must be exactly 32 hex characters (16 bytes). Verify:
+```bash
+echo -n "$TRACE_ID" | wc -c  # Should output 32
+```
+
+</details>
+
+<details>
+<summary><strong>Dashboard panels show 'No data'</strong></summary>
+
+Verify the tenant ID is correct in the datasource header. The local dev datasources use `<your-tenant-id>` not your lab tenant.
+For local dev, query directly without Envoy routing:
+```bash
+curl -s "https://<edge>.m.xscalerlabs.com/prometheus/api/v1/query" \
+  -H "X-Scope-OrgID: $TENANT_ID" \
+  --data-urlencode 'query=lab7_requests_total' | jq .
+```
+
+</details>
 
 ---
 
 *← Previous: [Session 7 Overview](overview.md)*  
-*Next: [Wrap-Up →](wrap-up.md)*
+*Next: [Wrap-Up →](wrap-up.mdx)*
